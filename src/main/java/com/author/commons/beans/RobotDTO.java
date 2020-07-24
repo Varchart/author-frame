@@ -31,7 +31,12 @@ public class RobotDTO extends BaseEntity {
 	/**
 	 * 活跃留存
 	 */
-	private BigDecimal auSave;
+	private BigDecimal auWait;
+
+	/**
+	 * 停留时长
+	 */
+	private String uwTime;
 
 	/**
 	 * 广告收入

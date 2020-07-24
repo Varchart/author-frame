@@ -2,6 +2,7 @@ package com.author.commons.webget;
 
 import java.text.MessageFormat;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.author.commons.beans.DataBean;
 import com.author.commons.beans.HeadBean;
-import com.author.commons.beans.RobotDTO;
-import com.author.commons.service.IOaQqRobotService;
 import com.author.commons.utils.Constants;
 import com.author.commons.utils.Result;
 import com.author.commons.utils.enums.Rc;
+import com.author.commons.utils.quartzs.RunHandle;
 import com.author.commons.utils.redis.RedisImpl;
 import com.author.commons.utils.resps.Response;
 
@@ -35,48 +35,47 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/door")
 @SuppressWarnings("all")
 public class DoorController {
-	@Autowired
-	private RedisImpl cacheService;
-	
-	@Autowired
-	private IOaQqRobotService iRobotService;
+  @Autowired
+  private RedisImpl cacheService;
 
-	@RequestMapping(value = "/requestAuthor")
-	public void requestAuthor(@RequestBody DataBean record) {
-		if (StrUtil.isNotEmpty(record.getAppID())) {
+  @Resource
+  private RunHandle handleService;
 
-			String openUrl = MessageFormat.format(Constants.AUTHOR_URL, record.getAppID(),
-					MessageFormat.format(record.getAuthorCodeRedirectUri(), record.getAppID()), record.getState());
-			if (StrUtil.isEmpty(record.getCmd())) {
-				record.setCmd(Constants.DEFAULT_CMD);
-			}
-			String runCmd = record.getCmd() + StrUtil.TAB + openUrl;
-			Runtime run = Runtime.getRuntime();
-			try {
-				run.exec(runCmd);
-			} catch (Throwable ex) {
-				log.error("打开浏览器异常:" + ex.getMessage());
-			}
-		}
-	}
+  @RequestMapping(value = "/requestAuthor")
+  public void requestAuthor(@RequestBody DataBean record) {
+    if (StrUtil.isNotEmpty(record.getAppID())) {
 
-	@RequestMapping(value = "/headInit", method = RequestMethod.POST)
-	public Result headInit(@RequestBody @Valid HeadBean record, BindingResult results) {
-		if (results.hasErrors()) {
-			return Response.genFailResult(results.getFieldError().getDefaultMessage());
-		}
-		cacheService.redisHandle(
-				MessageFormat.format(Constants.redis.account_data, Rc.quid + StrUtil.COLON + record.getAppID()),
-				record.getQuID(), Constants.redis.redis1str, 0);
-		cacheService.redisHandle(
-				MessageFormat.format(Constants.redis.account_data, Rc.qticket + StrUtil.COLON + record.getAppID()),
-				record.getQticket(), Constants.redis.redis1str, 0);
-		return Response.genSuccessResult();
-	}
-	
-	@RequestMapping(value = "/handleData", method = RequestMethod.POST)
-	public Result handleData(@RequestBody RobotDTO record) {
-		boolean flag = iRobotService.save(record.po());
-		return Response.genSuccessResult();
-	}
+      String openUrl = MessageFormat.format(Constants.AUTHOR_URL, record.getAppID(),
+          MessageFormat.format(record.getAuthorCodeRedirectUri(), record.getAppID()), record.getState());
+      if (StrUtil.isEmpty(record.getCmd())) {
+        record.setCmd(Constants.DEFAULT_CMD);
+      }
+      String runCmd = record.getCmd() + StrUtil.TAB + openUrl;
+      Runtime run = Runtime.getRuntime();
+      try {
+        run.exec(runCmd);
+      } catch (Throwable ex) {
+        log.error("打开浏览器异常:" + ex.getMessage());
+      }
+    }
+  }
+
+  @RequestMapping(value = "/headInit", method = RequestMethod.POST)
+  public Result headInit(@RequestBody @Valid HeadBean record, BindingResult results) {
+    if (results.hasErrors()) {
+      return Response.genFailResult(results.getFieldError().getDefaultMessage());
+    }
+    cacheService.redisHandle(
+        MessageFormat.format(Constants.redis.account_data, Rc.quid + StrUtil.COLON + record.getAppID()),
+        record.getQuID(), Constants.redis.redis1str, 0);
+    cacheService.redisHandle(
+        MessageFormat.format(Constants.redis.account_data, Rc.qticket + StrUtil.COLON + record.getAppID()),
+        record.getQticket(), Constants.redis.redis1str, 0);
+    return Response.genSuccessResult();
+  }
+
+  @RequestMapping(value = "/handleData", method = RequestMethod.POST)
+  public void handleData() {
+    handleService.run1data();
+  }
 }

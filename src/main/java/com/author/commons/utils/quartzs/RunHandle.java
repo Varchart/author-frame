@@ -12,10 +12,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.author.commons.beans.ChannelDetailDTO;
+import com.author.commons.beans.models.OaQqRobot;
+import com.author.commons.service.IOaQqRobotService;
 import com.author.commons.utils.Constants;
 import com.author.commons.utils.enums.Rc;
 import com.author.commons.utils.redis.RedisImpl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
@@ -34,7 +37,14 @@ public class RunHandle {
   @Autowired
   private RedisImpl cacheService;
 
-  @Scheduled(fixedDelay = 5000)
+  @Autowired
+  private IOaQqRobotService iRobotService;
+
+  /*
+   * cron = "0 0 0 * * ?" 凌晨00点执行
+   * fixedDelay = 5000 每5s执行一次
+   */
+  @Scheduled(cron = "0 0 0 * * ?")
   public void run1data() {
     StringBuffer cookies = null;
     String ks = MessageFormat.format(Constants.redis.account_data, Rc.quid + StrUtil.COLON + Constants.ask);
@@ -53,6 +63,30 @@ public class RunHandle {
         cookies = new StringBuffer();
         cookies.append(Rc.quid).append(Constants.equals).append(quid).append(Constants.split);
         cookies.append(Rc.qticket).append(Constants.equals).append(qticket).append(Constants.split);
+
+        OaQqRobot record = null;
+        if (null == record) {
+          record = new OaQqRobot();
+        }
+
+        record.setAppId(StrUtil.isNotBlank(appID) ? Long.valueOf(appID) : null);
+        /* 访问人数 */
+        String callPersons = getGeneralSituation(appID, cookies);
+        record.setCallPersons(StrUtil.isNotBlank(callPersons) ? Long.valueOf(callPersons) : null);
+        /* 活跃留存 */
+        BigDecimal uaWait = getRetentionTrend(appID, cookies);
+        record.setUaWait(uaWait);
+        /* 人均停留时长 */
+        String uwTime = getOperationData(appID, cookies);
+        record.setUwTime(uwTime);
+        /* 广告投放 */
+        String adSend = getReferUvs(appID, cookies);
+        record.setAdSend(StrUtil.isNotBlank(adSend) ? Long.valueOf(adSend) : null);
+        /* 收入流水(元) */
+        ChannelDetailDTO channelResult = getAdDataDaily(appID, cookies);
+        BeanUtil.copyProperties(channelResult, record, false);
+
+        iRobotService.save(record);
       } while (rs.hasNext());
     }
   }
@@ -251,7 +285,7 @@ public class RunHandle {
                 && StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.ad.adType)), at)) {
               String number = NumberUtil.decimalFormat("0",
                   result.getObj(Constants.ad.revenue.toString(), 0));
-              rts.setIncome(NumberUtil.div(number, Constants.million, 2));
+              rts.setAdIncome(NumberUtil.div(number, Constants.million, 2));
             }
           } while (results.hasNext());
         }

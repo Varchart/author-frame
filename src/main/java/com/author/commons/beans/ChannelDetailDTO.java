@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class ChannelDetailDTO {
-	private BigDecimal income;
+	private BigDecimal adIncome;
 	private BigDecimal qqChannel;
 	private BigDecimal buyChannel;
 }

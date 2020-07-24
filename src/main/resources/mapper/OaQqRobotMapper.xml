@@ -8,7 +8,8 @@
         <result column="app_id" property="appId" />
         <result column="call_persons" property="callPersons" />
         <result column="ad_send" property="adSend" />
-        <result column="au_save" property="auSave" />
+        <result column="ua_wait" property="uaWait" />
+        <result column="uw_time" property="uwTime" />
         <result column="ad_income" property="adIncome" />
         <result column="qq_channel" property="qqChannel" />
         <result column="buy_channel" property="buyChannel" />
@@ -20,7 +21,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, app_id, call_persons, ad_send, au_save, ad_income, qq_channel, buy_channel, handle_date, valid, create_time, update_time
+        id, app_id, call_persons, ad_send, ua_wait, uw_time, ad_income, qq_channel, buy_channel, handle_date, valid, create_time, update_time
     </sql>
 
 </mapper>
