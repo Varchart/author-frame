@@ -41,8 +41,7 @@ public class RunHandle {
   private IOaQqRobotService iRobotService;
 
   /*
-   * cron = "0 0 0 * * ?" 凌晨00点执行
-   * fixedDelay = 5000 每5s执行一次
+   * cron = "0 0 0 * * ?" 凌晨00点执行 fixedDelay = 5000 每5s执行一次
    */
   @Scheduled(cron = "0 0 0 * * ?")
   public void run1data() {
@@ -70,6 +69,9 @@ public class RunHandle {
         }
 
         record.setAppId(StrUtil.isNotBlank(appID) ? Long.valueOf(appID) : null);
+
+        String ftime = DateUtil.format(customDate(-1).getTime(), DatePattern.PURE_DATE_PATTERN);
+        record.setHandleDate(ftime);
         /* 访问人数 */
         String callPersons = getGeneralSituation(appID, cookies);
         record.setCallPersons(StrUtil.isNotBlank(callPersons) ? Long.valueOf(callPersons) : null);
@@ -89,7 +91,7 @@ public class RunHandle {
         iRobotService.save(record);
       } while (rs.hasNext());
     } else {
-    	log.error("授权信息缺失:{quid}, {qticket}");
+      log.error("授权信息缺失:{quid}, {qticket}");
     }
     log.info("run1data 结束时间:{}", DateUtil.now());
   }
