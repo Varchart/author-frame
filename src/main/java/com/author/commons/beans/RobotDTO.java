@@ -2,6 +2,9 @@ package com.author.commons.beans;
 
 import java.math.BigDecimal;
 
+import com.author.commons.beans.models.OaQqRobot;
+
+import cn.hutool.core.bean.BeanUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -54,4 +57,10 @@ public class RobotDTO extends BaseEntity {
 	 * 是否有效(1-y,0-n)
 	 */
 	private Boolean valid;
+	
+	public OaQqRobot po() {
+		OaQqRobot po = new OaQqRobot();
+		BeanUtil.copyProperties(this, po, false);
+		return po;
+	}
 }

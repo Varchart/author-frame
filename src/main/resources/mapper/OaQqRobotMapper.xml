@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.author.commons.dao.OaQqRobotMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.author.commons.beans.models.OaQqRobot">
+        <id column="id" property="id" />
+        <result column="app_id" property="appId" />
+        <result column="call_persons" property="callPersons" />
+        <result column="ad_send" property="adSend" />
+        <result column="au_save" property="auSave" />
+        <result column="ad_income" property="adIncome" />
+        <result column="qq_channel" property="qqChannel" />
+        <result column="buy_channel" property="buyChannel" />
+        <result column="handle_date" property="handleDate" />
+        <result column="valid" property="valid" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, app_id, call_persons, ad_send, au_save, ad_income, qq_channel, buy_channel, handle_date, valid, create_time, update_time
+    </sql>
+
+</mapper>
