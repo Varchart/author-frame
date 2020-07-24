@@ -88,7 +88,10 @@ public class RunHandle {
 
         iRobotService.save(record);
       } while (rs.hasNext());
+    } else {
+    	log.error("授权信息缺失:{quid}, {qticket}");
     }
+    log.info("run1data 结束时间:{}", DateUtil.now());
   }
 
   /**
