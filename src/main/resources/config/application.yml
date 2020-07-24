@@ -1,0 +1,16 @@
+logging:
+    level:
+        com.author.commons: DEBUG
+server:
+    port: 8888
+spring:
+    application:
+        name: author
+    redis:      host: 127.0.0.1
+      port: 6379
+      password: 
+      max-wait: 30000
+      max-active: 100
+      max-idle: 50
+      min-idle: 0
+      timeout: 5000
