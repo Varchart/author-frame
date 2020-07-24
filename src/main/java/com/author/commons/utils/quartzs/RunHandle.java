@@ -126,7 +126,7 @@ public class RunHandle {
         } while (results.hasNext());
       }
     } catch (Throwable ex) {
-      log.error("getGeneralSituation 失败:{0}", ex.getMessage());
+      log.error("getGeneralSituation 失败:{}", ex.getMessage());
     }
     return null;
   }
