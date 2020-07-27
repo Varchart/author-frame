@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author yn
@@ -15,5 +15,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface OaQqRobotMapper extends BaseMapper<OaQqRobot> {
-
+  public int insertActive(OaQqRobot record);
 }

@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2020-07-24
  */
 public interface IOaQqRobotService extends IService<OaQqRobot> {
-
+	public boolean saveActive(OaQqRobot record);
 }

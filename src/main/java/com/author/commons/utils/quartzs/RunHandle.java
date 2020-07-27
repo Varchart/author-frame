@@ -43,7 +43,7 @@ public class RunHandle {
   /*
    * cron = "0 0 0 * * ?" 凌晨00点执行 fixedDelay = 5000 每5s执行一次
    */
-  @Scheduled(cron = "0 0 0 * * ?")
+  @Scheduled(fixedDelay = 1000 * 60)
   public void run1data() {
     StringBuffer cookies = null;
     String ks = MessageFormat.format(Constants.redis.account_data, Rc.quid + StrUtil.COLON + Constants.ask);
@@ -88,7 +88,7 @@ public class RunHandle {
         ChannelDetailDTO channelResult = getAdDataDaily(appID, cookies);
         BeanUtil.copyProperties(channelResult, record, false);
 
-        iRobotService.save(record);
+        iRobotService.saveActive(record);
       } while (rs.hasNext());
     } else {
       log.error("授权信息缺失:{quid}, {qticket}");
@@ -113,17 +113,17 @@ public class RunHandle {
       /* 访问人数类型 */
       String gs5type = "5",
           resp = post(Constants.uri.generalSituationUri, StrUtil.toString(cookies), StrUtil.toString(params));
-      Object data = JSONUtil.parseObj(resp).get(Rc.data);
+      Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
       JSONArray generalSituations = JSONUtil
-          .parseArray(JSONUtil.parseObj(data).get(Constants.gs.generalSituation));
+          .parseArray(JSONUtil.parseObj(data).get(Constants.gs.generalSituation.toString()));
       Iterator<Object> results = generalSituations.iterator();
 
       /* 访问人数 */
       if (CollectionUtil.isNotEmpty(results)) {
         do {
           JSONObject result = (JSONObject) results.next();
-          if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.gs.dataType)), gs5type)) {
-            return StrUtil.toString(result.get(Constants.gs.number));
+          if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.gs.dataType.toString())), gs5type)) {
+            return StrUtil.toString(result.get(Constants.gs.number.toString()));
           }
         } while (results.hasNext());
       }
@@ -155,17 +155,16 @@ public class RunHandle {
       }
 
       String resp = post(Constants.uri.retentionDataUri, StrUtil.toString(cookies), StrUtil.toString(params));
-      Object data = JSONUtil.parseObj(resp).get(Rc.data);
-      JSONArray retentionDatas = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.rd.retentionDatas));
+      Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
+      JSONArray retentionDatas = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.rd.retentionDatas.toString()));
       Iterator<Object> results = retentionDatas.iterator();
       /* 活跃留存 */
       if (CollectionUtil.isNotEmpty(results)) {
         do {
           JSONObject result = (JSONObject) results.next();
-          if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.rd.date_type)), dt)
-              && StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime)), realTime)) {
+          if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.rd.date_type.toString())), dt)) {
             /* 次日留存 */
-            BigDecimal val = NumberUtil.toBigDecimal(StrUtil.toString(result.get(Constants.rd.data_value)));
+            BigDecimal val = NumberUtil.toBigDecimal(StrUtil.toString(result.get(Constants.rd.data_value.toString())));
             return NumberUtil.round(NumberUtil.mul(val, 100), 2, RoundingMode.CEILING);
           }
         } while (results.hasNext());
@@ -196,15 +195,15 @@ public class RunHandle {
       }
 
       String resp = post(Constants.uri.operationDataUri, StrUtil.toString(cookies), StrUtil.toString(params));
-      Object data = JSONUtil.parseObj(resp).get(Rc.data);
-      JSONArray accessDatas = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.od.accessDatas));
+      Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
+      JSONArray accessDatas = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.od.accessDatas.toString()));
       Iterator<Object> results = accessDatas.iterator();
       /* 人均停留时长 */
       if (CollectionUtil.isNotEmpty(results)) {
         do {
           JSONObject result = (JSONObject) results.next();
-          if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime)), ftime)) {
-            return StrUtil.sub(StrUtil.toString(result.get(Constants.od.uvTime)), 0, 3);
+          if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime.toString())), ftime)) {
+            return StrUtil.sub(StrUtil.toString(result.get(Constants.od.uvTime.toString())), 0, 3);
           }
         } while (results.hasNext());
       }
@@ -236,15 +235,15 @@ public class RunHandle {
       }
 
       String resp = post(Constants.uri.referUvsUri, StrUtil.toString(cookies), StrUtil.toString(params));
-      Object data = JSONUtil.parseObj(resp).get(Rc.data);
-      JSONArray referUvs = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.ru.referUvs));
+      Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
+      JSONArray referUvs = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.ru.referUvs.toString()));
       Iterator<Object> results = referUvs.iterator();
       /* 广告投放 */
       if (CollectionUtil.isNotEmpty(results)) {
         do {
           JSONObject result = (JSONObject) results.next();
-          if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime)), ftime)) {
-            return StrUtil.toString(result.get(Constants.ru.uv));
+          if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime.toString())), ftime)) {
+            return StrUtil.toString(result.get(Constants.ru.uv.toString()));
           }
         } while (results.hasNext());
       }
@@ -286,11 +285,8 @@ public class RunHandle {
         if (CollectionUtil.isNotEmpty(results)) {
           do {
             JSONObject result = (JSONObject) results.next();
-            if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime)), ftime)
-                && StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.ad.adType)), at)) {
-              String number = NumberUtil.decimalFormat("0",
-                  result.getObj(Constants.ad.revenue.toString(), 0));
-              rts.setAdIncome(NumberUtil.div(number, Constants.million, 2));
+            if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime.toString())), ftime) && StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.ad.adType.toString())), at)) {
+              rts.setAdIncome(millionNumber(result));
             }
           } while (results.hasNext());
         }
@@ -304,8 +300,8 @@ public class RunHandle {
         if (CollectionUtil.isNotEmpty(results)) {
           do {
             JSONObject result = (JSONObject) results.next();
-            if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime)), ftime)
-                && StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.ad.adType)), at)) {
+            if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime.toString())), ftime)
+                && StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.ad.adType.toString())), at)) {
               rts.setQqChannel(millionNumber(result));
             }
           } while (results.hasNext());
@@ -320,8 +316,8 @@ public class RunHandle {
         if (CollectionUtil.isNotEmpty(results)) {
           do {
             JSONObject result = (JSONObject) results.next();
-            if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime)), ftime)
-                && StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.ad.adType)), at)) {
+            if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime.toString())), ftime)
+                && StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.ad.adType.toString())), at)) {
               rts.setBuyChannel(millionNumber(result));
             }
           } while (results.hasNext());
@@ -334,15 +330,15 @@ public class RunHandle {
   }
 
   protected JSONArray channelData(StringBuffer cookies, JSONObject params) {
-    String resp = post(Constants.uri.referUvsUri, StrUtil.toString(cookies), StrUtil.toString(params));
-    Object data = JSONUtil.parseObj(resp).get(Rc.data);
-    return JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.ad.AdDataDailyList));
+    String resp = post(Constants.uri.adDataDailyUri, StrUtil.toString(cookies), StrUtil.toString(params));
+    Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
+    return JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.ad.AdDataDailyList.toString()));
   }
 
   protected BigDecimal millionNumber(JSONObject result) {
     synchronized (result) {
-      String number = NumberUtil.decimalFormat("0", result.getObj(Constants.ad.revenue.toString(), 0));
-      return NumberUtil.div(number, Constants.million, 2);
+      String number = StrUtil.toString(result.get(Constants.ad.revenue.toString()));
+      return NumberUtil.div(StrUtil.isNotBlank(number) ? number : "0", Constants.million, 2);
     }
   }
 
