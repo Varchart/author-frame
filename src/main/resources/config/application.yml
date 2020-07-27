@@ -15,9 +15,9 @@ spring:
         one:
           db-type: mysql
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://101.133.137.101:3306/oasystem?useUnicode=true&characterEncoding=UTF8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&autoReconnect=true&allowMultiQueries=true
-          username: oasystem
-          password: izpPnN2LRscYN8j3
+          url: jdbc:mysql://192.168.0.108:3306/author?useUnicode=true&characterEncoding=UTF8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&autoReconnect=true&allowMultiQueries=true
+          username: root
+          password: Damon1@pwd
           # 下面为连接池的补充设置，应用到上面所有数据源中
           # 初始化连接数大小，最小，最大
           initial-size: 5
