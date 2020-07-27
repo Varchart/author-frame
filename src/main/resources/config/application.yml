@@ -4,7 +4,7 @@ logging:
     config: classpath:log4j2.xml
 
 server:
-    port: 3688
+    port: 8081
 #Spring Config
 spring:
     application:
