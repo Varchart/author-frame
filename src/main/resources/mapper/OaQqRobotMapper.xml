@@ -39,6 +39,27 @@
       <if test="valid != null and valid != ''">
         valid,
       </if>
+      <if test="callPersons != null">
+        call_persons,
+      </if>
+      <if test="adSend != null">
+        ad_send,
+      </if>
+      <if test="uaWait != null">
+        ua_wait,
+      </if>
+      <if test="uwTime != null">
+        uw_time,
+      </if>
+      <if test="adIncome != null">
+        ad_income,
+      </if>
+      <if test="qqChannel != null">
+        qq_channel,
+      </if>
+      <if test="buyChannel != null">
+        buy_channel,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -53,9 +74,42 @@
       <if test="valid != null and valid != ''">
         #{valid},
       </if>
+      <if test="callPersons != null">
+        #{callPersons},
+      </if>
+      <if test="adSend != null">
+        #{adSend},
+      </if>
+      <if test="uaWait != null">
+        #{uaWait},
+      </if>
+      <if test="uwTime != null">
+        #{uwTime},
+      </if>
+      <if test="adIncome != null">
+        #{adIncome},
+      </if>
+      <if test="qqChannel != null">
+        #{qqChannel},
+      </if>
+      <if test="buyChannel != null">
+        #{buyChannel},
+      </if>
     </trim>
     ON DUPLICATE KEY UPDATE
     <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId},
+      </if>
+      <if test="handleDate != null">
+        handle_date = #{handleDate},
+      </if>
+      <if test="valid != null and valid != ''">
+        valid = #{valid},
+      </if>
       <if test="callPersons != null">
         call_persons = #{callPersons},
       </if>
@@ -76,9 +130,6 @@
       </if>
       <if test="buyChannel != null">
         buy_channel = #{buyChannel},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime},
       </if>
     </trim>
   </insert>
