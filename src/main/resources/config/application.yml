@@ -76,9 +76,9 @@ spring:
             stat:
               merge-sql: true
               slow-sql-millis: 5000
-    redis:      host: 192.168.0.102
+    redis:      host: 101.133.137.101
       port: 6379
-      password: 
+      password: T2rJGEf8DbDAHhNW
       timeout: 5000
       jedis:
         pool:
