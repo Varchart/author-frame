@@ -72,7 +72,7 @@ public class RunHandle {
 					record.setAppId(StrUtil.isNotBlank(appID) ? Long.valueOf(appID) : null);
 
 					String email = getDeveloper(appID, cookies);
-					record.setEmail(email);
+					record.setEmail(StrUtil.sub(email, 0, 50));
 
 					String ftime = DateUtil.format(customDate(-1).getTime(), DatePattern.PURE_DATE_PATTERN);
 					record.setHandleDate(ftime);
