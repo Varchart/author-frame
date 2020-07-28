@@ -22,6 +22,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.text.UnicodeUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -109,7 +110,7 @@ public class RunHandle {
     Object code = JSONUtil.parseObj(resp).get(Rc.code.toString());
     if (ObjectUtil.equal(Constants.code.noLogin, code)) {
       /* 登录态校验失败 */
-      log.warn("{}:{}, {}", Constants.msg.noLogin, uri, DateUtil.now());
+      log.warn("{}:{}, {}", UnicodeUtil.toString(Constants.msg.noLogin), uri, DateUtil.now());
       return false;
     }
     return true;
