@@ -15,5 +15,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 @Mapper
 public interface OaQqRobotMapper extends BaseMapper<OaQqRobot> {
-  public int insertActive(OaQqRobot record);
+	public int insertActive(OaQqRobot record);
 }

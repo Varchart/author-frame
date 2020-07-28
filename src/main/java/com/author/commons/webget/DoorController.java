@@ -35,47 +35,42 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/door")
 @SuppressWarnings("all")
 public class DoorController {
-  @Autowired
-  private RedisImpl cacheService;
+	@Autowired
+	private RedisImpl cacheService;
 
-  @Resource
-  private RunHandle handleService;
+	@Resource
+	private RunHandle handleService;
 
-  @RequestMapping(value = "/requestAuthor")
-  public void requestAuthor(@RequestBody DataBean record) {
-    if (StrUtil.isNotEmpty(record.getAppID())) {
+	@RequestMapping(value = "/requestAuthor")
+	public void requestAuthor(@RequestBody DataBean record) {
+		if (StrUtil.isNotEmpty(record.getAppID())) {
 
-      String openUrl = MessageFormat.format(Constants.AUTHOR_URL, record.getAppID(),
-          MessageFormat.format(record.getAuthorCodeRedirectUri(), record.getAppID()), record.getState());
-      if (StrUtil.isEmpty(record.getCmd())) {
-        record.setCmd(Constants.DEFAULT_CMD);
-      }
-      String runCmd = record.getCmd() + StrUtil.TAB + openUrl;
-      Runtime run = Runtime.getRuntime();
-      try {
-        run.exec(runCmd);
-      } catch (Throwable ex) {
-        log.error("打开浏览器异常:" + ex.getMessage());
-      }
-    }
-  }
+			String openUrl = MessageFormat.format(Constants.AUTHOR_URL, record.getAppID(), MessageFormat.format(record.getAuthorCodeRedirectUri(), record.getAppID()), record.getState());
+			if (StrUtil.isEmpty(record.getCmd())) {
+				record.setCmd(Constants.DEFAULT_CMD);
+			}
+			String runCmd = record.getCmd() + StrUtil.TAB + openUrl;
+			Runtime run = Runtime.getRuntime();
+			try {
+				run.exec(runCmd);
+			} catch (Throwable ex) {
+				log.error("打开浏览器异常:" + ex.getMessage());
+			}
+		}
+	}
 
-  @RequestMapping(value = "/headInit", method = RequestMethod.POST)
-  public Result headInit(@RequestBody @Valid HeadBean record, BindingResult results) {
-    if (results.hasErrors()) {
-      return Response.genFailResult(results.getFieldError().getDefaultMessage());
-    }
-    cacheService.redisHandle(
-        MessageFormat.format(Constants.redis.account_data, Rc.quid + StrUtil.COLON + record.getAppID()),
-        record.getQuID(), Constants.redis.redis1str, 0);
-    cacheService.redisHandle(
-        MessageFormat.format(Constants.redis.account_data, Rc.qticket + StrUtil.COLON + record.getAppID()),
-        record.getQticket(), Constants.redis.redis1str, 0);
-    return Response.genSuccessResult();
-  }
+	@RequestMapping(value = "/headInit", method = RequestMethod.POST)
+	public Result headInit(@RequestBody @Valid HeadBean record, BindingResult results) {
+		if (results.hasErrors()) {
+			return Response.genFailResult(results.getFieldError().getDefaultMessage());
+		}
+		cacheService.redisHandle(MessageFormat.format(Constants.redis.account_data, Rc.quid + StrUtil.COLON + record.getAppID()), record.getQuID(), Constants.redis.redis1str, 0);
+		cacheService.redisHandle(MessageFormat.format(Constants.redis.account_data, Rc.qticket + StrUtil.COLON + record.getAppID()), record.getQticket(), Constants.redis.redis1str, 0);
+		return Response.genSuccessResult();
+	}
 
-  @RequestMapping(value = "/handleData", method = RequestMethod.POST)
-  public void handleData() {
-    handleService.run1data();
-  }
+	@RequestMapping(value = "/handleData", method = RequestMethod.POST)
+	public void handleData() {
+		handleService.run1data();
+	}
 }

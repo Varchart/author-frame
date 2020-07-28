@@ -13,9 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 @SuppressWarnings("all")
 public class RedisConfig extends CachingConfigurerSupport {
 	@Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
-        RedisTemplate<String, Object> template = new RedisTemplate();
-        template.setConnectionFactory(factory);
-        return template;
-    }
+	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
+		RedisTemplate<String, Object> template = new RedisTemplate();
+		template.setConnectionFactory(factory);
+		return template;
+	}
 }

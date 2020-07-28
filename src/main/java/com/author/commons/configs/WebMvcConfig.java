@@ -12,16 +12,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-  public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**");
-  }
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**");
+	}
 
-  public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
 
-  }
+	}
 
-  public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-    configurer.mediaType("json", MediaType.APPLICATION_JSON);
-    configurer.mediaType("xml", MediaType.APPLICATION_XML);
-  }
+	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+		configurer.mediaType("json", MediaType.APPLICATION_JSON);
+		configurer.mediaType("xml", MediaType.APPLICATION_XML);
+	}
 }

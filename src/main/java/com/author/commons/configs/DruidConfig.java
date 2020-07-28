@@ -15,22 +15,22 @@ import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 @Configuration
 public class DruidConfig {
 
-  @Primary
-  @Bean(name = "data1Source")
-  @ConfigurationProperties("spring.datasource.druid.one")
-  public DataSource dataSourceOne() {
-    return DruidDataSourceBuilder.create().build();
-  }
+	@Primary
+	@Bean(name = "data1Source")
+	@ConfigurationProperties("spring.datasource.druid.one")
+	public DataSource dataSourceOne() {
+		return DruidDataSourceBuilder.create().build();
+	}
 
-  @Bean(name = "data2Source")
-  @ConfigurationProperties("spring.datasource.druid.two")
-  public DataSource dataSourceTwo() {
-    return DruidDataSourceBuilder.create().build();
-  }
+	@Bean(name = "data2Source")
+	@ConfigurationProperties("spring.datasource.druid.two")
+	public DataSource dataSourceTwo() {
+		return DruidDataSourceBuilder.create().build();
+	}
 
-  @Bean
-  public PaginationInterceptor paginationInterceptor() {
-    /* paginationInterceptor.setLimit(你的最大单页限制数量，默认 500 条，小于 0 如 -1 不受限制) */
-    return new PaginationInterceptor();
-  }
+	@Bean
+	public PaginationInterceptor paginationInterceptor() {
+		/* paginationInterceptor.setLimit(你的最大单页限制数量，默认 500 条，小于 0 如 -1 不受限制) */
+		return new PaginationInterceptor();
+	}
 }

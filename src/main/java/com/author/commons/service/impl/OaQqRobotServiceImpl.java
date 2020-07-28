@@ -19,10 +19,10 @@ import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
  */
 @Service
 public class OaQqRobotServiceImpl extends ServiceImpl<OaQqRobotMapper, OaQqRobot> implements IOaQqRobotService {
-  @Autowired
-  private OaQqRobotMapper robotMapper;
+	@Autowired
+	private OaQqRobotMapper robotMapper;
 
-  public boolean saveActive(OaQqRobot record) {
-    return SqlHelper.retBool(robotMapper.insertActive(record));
-  }
+	public boolean saveActive(OaQqRobot record) {
+		return SqlHelper.retBool(robotMapper.insertActive(record));
+	}
 }
