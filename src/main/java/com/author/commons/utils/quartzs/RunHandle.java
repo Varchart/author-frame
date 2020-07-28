@@ -107,11 +107,11 @@ public class RunHandle {
 	 * @param resp 响应
 	 * @return
 	 */
-	protected boolean loginCheck(String resp, String uri) {
+	protected boolean loginCheck(String resp, String uri, Object appID) {
 		Object code = JSONUtil.parseObj(resp).get(Rc.code.toString());
 		if (ObjectUtil.equal(Constants.log.NOT_LOGIN.c(), code)) {
 			/* 登录态校验失败 */
-			log.warn("{}:{}, {}", Constants.log.NOT_LOGIN.m(), uri, DateUtil.now());
+			log.warn("{}({}):{}, {}", Constants.log.NOT_LOGIN.m(), appID, uri, DateUtil.now());
 			return false;
 		}
 		return true;
@@ -128,7 +128,7 @@ public class RunHandle {
 		try {
 			/* 获得账号 */
 			String resp = get(Constants.uri.getDeveloper, StrUtil.toString(cookies), null);
-			boolean loginFlag = loginCheck(resp, Constants.uri.getDeveloper);
+			boolean loginFlag = loginCheck(resp, Constants.uri.getDeveloper, appID);
 			if (loginFlag) {
 				Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
 				if (null != data) {
@@ -160,7 +160,7 @@ public class RunHandle {
 			}
 			/* 访问人数类型 */
 			String gs5type = "5", resp = post(Constants.uri.generalSituationUri, StrUtil.toString(cookies), StrUtil.toString(params));
-			boolean loginFlag = loginCheck(resp, Constants.uri.generalSituationUri);
+			boolean loginFlag = loginCheck(resp, Constants.uri.generalSituationUri, appID);
 			if (loginFlag) {
 				Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
 				JSONArray generalSituations = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.gs.generalSituation.toString()));
@@ -203,7 +203,7 @@ public class RunHandle {
 			}
 
 			String resp = post(Constants.uri.retentionDataUri, StrUtil.toString(cookies), StrUtil.toString(params));
-			boolean loginFlag = loginCheck(resp, Constants.uri.retentionDataUri);
+			boolean loginFlag = loginCheck(resp, Constants.uri.retentionDataUri, appID);
 			if (loginFlag) {
 				Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
 				JSONArray retentionDatas = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.rd.retentionDatas.toString()));
@@ -246,7 +246,7 @@ public class RunHandle {
 			}
 
 			String resp = post(Constants.uri.operationDataUri, StrUtil.toString(cookies), StrUtil.toString(params));
-			boolean loginFlag = loginCheck(resp, Constants.uri.operationDataUri);
+			boolean loginFlag = loginCheck(resp, Constants.uri.operationDataUri, appID);
 			if (loginFlag) {
 				Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
 				JSONArray accessDatas = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.od.accessDatas.toString()));
@@ -288,7 +288,7 @@ public class RunHandle {
 			}
 
 			String resp = post(Constants.uri.referUvsUri, StrUtil.toString(cookies), StrUtil.toString(params));
-			boolean loginFlag = loginCheck(resp, Constants.uri.referUvsUri);
+			boolean loginFlag = loginCheck(resp, Constants.uri.referUvsUri, appID);
 			if (loginFlag) {
 				Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
 				JSONArray referUvs = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.ru.referUvs.toString()));
@@ -387,7 +387,7 @@ public class RunHandle {
 
 	protected JSONArray channelData(StringBuffer cookies, JSONObject params) {
 		String resp = post(Constants.uri.adDataDailyUri, StrUtil.toString(cookies), StrUtil.toString(params));
-		boolean loginFlag = loginCheck(resp, Constants.uri.adDataDailyUri);
+		boolean loginFlag = loginCheck(resp, Constants.uri.adDataDailyUri, params.get(Rc.appid.toString()));
 		if (loginFlag) {
 			Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
 			return JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.ad.AdDataDailyList.toString()));
