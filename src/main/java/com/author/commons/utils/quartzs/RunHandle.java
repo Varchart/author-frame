@@ -44,7 +44,7 @@ public class RunHandle {
   /*
    * cron = "0 0 0 * * ?" 凌晨00点执行 fixedDelay = 5000 每5s执行一次
    */
-  @Scheduled(fixedDelay = 1000*60*5)
+  @Scheduled(cron = "0 0 0 * * ?")
   public void run1data() {
     StringBuffer cookies = null;
     String ks = MessageFormat.format(Constants.redis.account_data, Rc.quid + StrUtil.COLON + Constants.ask);
