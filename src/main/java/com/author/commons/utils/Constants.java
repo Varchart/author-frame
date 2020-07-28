@@ -1,5 +1,7 @@
 package com.author.commons.utils;
 
+import cn.hutool.core.text.UnicodeUtil;
+
 /**
  * @Description: TODO
  * @Author: YNa
@@ -14,12 +16,24 @@ public final class Constants {
   public final static String AUTHOR_URL = "https://developers.e.qq.com/oauth/authorize?client_id={0}&redirect_uri={1}&state={2}";
   public final static String DEFAULT_CMD = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
 
-  public final class msg {
-    public final static String noLogin = "\\u767b\\u5f55\\u6001\\u6821\\u9a8c\\u5931\\u8d25";
-  }
+  public enum log {
+    NOT_LOGIN(-101185006, UnicodeUtil.toString("\\u767b\\u5f55\\u6001\\u6821\\u9a8c\\u5931\\u8d25"));
 
-  public final class code {
-    public final static String noLogin = "-101185006";
+    private final int c;
+    private final String m;
+
+    log(int c, String m) {
+      this.c = c;
+      this.m = m;
+    }
+
+    public int c() {
+      return c;
+    }
+
+    public String m() {
+      return m;
+    }
   }
 
   public final class redis {

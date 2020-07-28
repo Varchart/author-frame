@@ -108,9 +108,9 @@ public class RunHandle {
    */
   protected boolean loginCheck(String resp, String uri) {
     Object code = JSONUtil.parseObj(resp).get(Rc.code.toString());
-    if (ObjectUtil.equal(Constants.code.noLogin, code)) {
+    if (ObjectUtil.equal(Constants.log.NOT_LOGIN.c(), code)) {
       /* 登录态校验失败 */
-      log.warn("{}:{}, {}", UnicodeUtil.toString(Constants.msg.noLogin), uri, DateUtil.now());
+      log.warn("{}:{}, {}", Constants.log.NOT_LOGIN.m(), uri, DateUtil.now());
       return false;
     }
     return true;
