@@ -17,17 +17,17 @@ public final class Constants {
   public final static String DEFAULT_CMD = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
 
   public enum log {
-    NOT_LOGIN(-101185006, UnicodeUtil.toString("\\u767b\\u5f55\\u6001\\u6821\\u9a8c\\u5931\\u8d25"));
+    NOT_LOGIN("-101185006", UnicodeUtil.toString("\\u767b\\u5f55\\u6001\\u6821\\u9a8c\\u5931\\u8d25"));
 
-    private final int c;
+    private final String c;
     private final String m;
 
-    log(int c, String m) {
+    log(String c, String m) {
       this.c = c;
       this.m = m;
     }
 
-    public int c() {
+    public String c() {
       return c;
     }
 
