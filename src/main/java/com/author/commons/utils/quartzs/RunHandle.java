@@ -71,8 +71,8 @@ public class RunHandle {
 
 					record.setAppId(StrUtil.isNotBlank(appID) ? Long.valueOf(appID) : null);
 
-					Object email = getDeveloper(appID, cookies);
-					record.setEmail(StrUtil.toString(email));
+					String email = getDeveloper(appID, cookies);
+					record.setEmail(email);
 
 					String ftime = DateUtil.format(customDate(-1).getTime(), DatePattern.PURE_DATE_PATTERN);
 					record.setHandleDate(ftime);
@@ -108,13 +108,16 @@ public class RunHandle {
 	 * @return
 	 */
 	protected boolean loginCheck(String resp, String uri, Object appID) {
-		Object code = JSONUtil.parseObj(resp).get(Rc.code.toString());
-		if (ObjectUtil.equal(Constants.log.NOT_LOGIN.c(), code)) {
-			/* 登录态校验失败 */
-			log.warn("{}({}):{}, {}", Constants.log.NOT_LOGIN.m(), appID, uri, DateUtil.now());
-			return false;
+		if (JSONUtil.isJson(resp)) {
+			JSONObject code = JSONUtil.parseObj(resp).getJSONObject(Rc.code.toString());
+			if (ObjectUtil.equal(Constants.log.NOT_LOGIN.c(), code)) {
+				/* 登录态校验失败 */
+				log.warn("{}({}):{}, {}", Constants.log.NOT_LOGIN.m(), appID, uri, DateUtil.now());
+				return false;
+			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -124,19 +127,21 @@ public class RunHandle {
 	 * @param cookies
 	 * @return
 	 */
-	protected Object getDeveloper(String appID, StringBuffer cookies) {
+	protected String getDeveloper(String appID, StringBuffer cookies) {
 		try {
 			/* 获得账号 */
 			String resp = get(Constants.uri.getDeveloper, StrUtil.toString(cookies), null);
 			boolean loginFlag = loginCheck(resp, Constants.uri.getDeveloper, appID);
-			if (loginFlag) {
-				Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
-				if (null != data) {
-					Object developerInfo = JSONUtil.parseObj(data).get(Constants.di.developerInfo.toString());
-					if (null != developerInfo) {
-						return JSONUtil.parseObj(developerInfo).get(Constants.di.email.toString());
-					}
-				}
+			if (!loginFlag) {
+				return null;
+			}
+			JSONObject data = JSONUtil.parseObj(resp).getJSONObject(Rc.data.toString());
+			if (JSONUtil.isNull(data)) {
+				return null;
+			}
+			JSONObject developerInfo = data.getJSONObject(Constants.di.developerInfo.toString());
+			if (!JSONUtil.isNull(developerInfo)) {
+				return developerInfo.getStr(Constants.di.email.toString());
 			}
 		} catch (Throwable ex) {
 			log.error("getDeveloper 失败:{}", ex.getMessage());
@@ -161,21 +166,29 @@ public class RunHandle {
 			/* 访问人数类型 */
 			String gs5type = "5", resp = post(Constants.uri.generalSituationUri, StrUtil.toString(cookies), StrUtil.toString(params));
 			boolean loginFlag = loginCheck(resp, Constants.uri.generalSituationUri, appID);
-			if (loginFlag) {
-				Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
-				JSONArray generalSituations = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.gs.generalSituation.toString()));
-				Iterator<Object> results = generalSituations.iterator();
-
-				/* 访问人数 */
-				if (CollectionUtil.isNotEmpty(results)) {
-					do {
-						JSONObject result = (JSONObject) results.next();
-						if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.gs.dataType.toString())), gs5type)) {
-							return StrUtil.toString(result.get(Constants.gs.number.toString()));
-						}
-					} while (results.hasNext());
-				}
+			if (!loginFlag) {
+				return null;
 			}
+			JSONObject data = JSONUtil.parseObj(resp).getJSONObject(Rc.data.toString());
+			if (JSONUtil.isNull(data)) {
+				return null;
+			}
+			JSONArray generalSituations = data.getJSONArray(Constants.gs.generalSituation.toString());
+			if (JSONUtil.isNull(generalSituations)) {
+				return null;
+			}
+			Iterator results = generalSituations.iterator();
+
+			if (CollectionUtil.isEmpty(results)) {
+				return null;
+			}
+			/* 访问人数 */
+			do {
+				JSONObject result = (JSONObject) results.next();
+				if (StrUtil.equalsIgnoreCase(result.getStr(Constants.gs.dataType.toString()), gs5type)) {
+					return result.getStr(Constants.gs.number.toString());
+				}
+			} while (results.hasNext());
 		} catch (Throwable ex) {
 			log.error("getGeneralSituation 失败:{}", ex.getMessage());
 		}
@@ -201,25 +214,32 @@ public class RunHandle {
 				params.set(Constants.rd.real_time_begin.toString(), realTime);
 				params.set(Constants.rd.real_time_end.toString(), realTime);
 			}
-
 			String resp = post(Constants.uri.retentionDataUri, StrUtil.toString(cookies), StrUtil.toString(params));
 			boolean loginFlag = loginCheck(resp, Constants.uri.retentionDataUri, appID);
-			if (loginFlag) {
-				Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
-				JSONArray retentionDatas = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.rd.retentionDatas.toString()));
-				Iterator<Object> results = retentionDatas.iterator();
-				/* 活跃留存 */
-				if (CollectionUtil.isNotEmpty(results)) {
-					do {
-						JSONObject result = (JSONObject) results.next();
-						if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.rd.date_type.toString())), dt)) {
-							/* 次日留存 */
-							BigDecimal val = NumberUtil.toBigDecimal(StrUtil.toString(result.get(Constants.rd.data_value.toString())));
-							return NumberUtil.round(NumberUtil.mul(val, 100), 2, RoundingMode.CEILING);
-						}
-					} while (results.hasNext());
-				}
+			if (!loginFlag) {
+				return null;
 			}
+			JSONObject data = JSONUtil.parseObj(resp).getJSONObject(Rc.data.toString());
+			if (JSONUtil.isNull(data)) {
+				return null;
+			}
+			JSONArray retentionDatas = data.getJSONArray(Constants.rd.retentionDatas.toString());
+			if (JSONUtil.isNull(retentionDatas)) {
+				return null;
+			}
+			Iterator<Object> results = retentionDatas.iterator();
+			if (CollectionUtil.isEmpty(results)) {
+				return null;
+			}
+			/* 活跃留存 */
+			do {
+				JSONObject result = (JSONObject) results.next();
+				if (StrUtil.equalsIgnoreCase(result.getStr(Constants.rd.date_type.toString()), dt)) {
+					/* 次日留存 */
+					BigDecimal val = NumberUtil.toBigDecimal(result.getStr(Constants.rd.data_value.toString()));
+					return NumberUtil.round(NumberUtil.mul(val, 100), 2, RoundingMode.CEILING);
+				}
+			} while (results.hasNext());
 		} catch (Throwable ex) {
 			log.error("getRetentionTrend 失败:{}", ex.getMessage());
 		}
@@ -244,23 +264,30 @@ public class RunHandle {
 				params.set(Constants.od.ftimeBegin.toString(), ftime);
 				params.set(Constants.od.ftimeEnd.toString(), ftime);
 			}
-
 			String resp = post(Constants.uri.operationDataUri, StrUtil.toString(cookies), StrUtil.toString(params));
 			boolean loginFlag = loginCheck(resp, Constants.uri.operationDataUri, appID);
-			if (loginFlag) {
-				Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
-				JSONArray accessDatas = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.od.accessDatas.toString()));
-				Iterator<Object> results = accessDatas.iterator();
-				/* 人均停留时长 */
-				if (CollectionUtil.isNotEmpty(results)) {
-					do {
-						JSONObject result = (JSONObject) results.next();
-						if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime.toString())), ftime)) {
-							return StrUtil.sub(StrUtil.toString(result.get(Constants.od.uvTime.toString())), 0, 3);
-						}
-					} while (results.hasNext());
-				}
+			if (!loginFlag) {
+				return null;
 			}
+			JSONObject data = JSONUtil.parseObj(resp).getJSONObject(Rc.data.toString());
+			if (JSONUtil.isNull(data)) {
+				return null;
+			}
+			JSONArray accessDatas = data.getJSONArray(Constants.od.accessDatas.toString());
+			if (JSONUtil.isNull(accessDatas)) {
+				return null;
+			}
+			Iterator<Object> results = accessDatas.iterator();
+			if (CollectionUtil.isEmpty(results)) {
+				return null;
+			}
+			/* 人均停留时长 */
+			do {
+				JSONObject result = (JSONObject) results.next();
+				if (StrUtil.equalsIgnoreCase(result.getStr(Rc.ftime.toString()), ftime)) {
+					return StrUtil.sub(result.getStr(Constants.od.uvTime.toString()), 0, 3);
+				}
+			} while (results.hasNext());
 		} catch (Throwable ex) {
 			log.error("getOperationData 失败:{}", ex.getMessage());
 		}
@@ -277,7 +304,7 @@ public class RunHandle {
 	protected String getReferUvs(String appID, StringBuffer cookies) {
 		JSONObject params = null;
 		try {
-			String ftime = DateUtil.format(customDate(-1).getTime(), DatePattern.PURE_DATE_PATTERN), ot = "2", tt = "1", r = "2054";
+			String ftime = DateUtil.format(customDate(-1).getTime(), DatePattern.PURE_DATE_PATTERN), ot = "2", tt = "1", rf = "2054";
 			if (null == params) {
 				params = new JSONObject();
 				params.set(Rc.appid.toString(), appID);
@@ -289,20 +316,28 @@ public class RunHandle {
 
 			String resp = post(Constants.uri.referUvsUri, StrUtil.toString(cookies), StrUtil.toString(params));
 			boolean loginFlag = loginCheck(resp, Constants.uri.referUvsUri, appID);
-			if (loginFlag) {
-				Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
-				JSONArray referUvs = JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.ru.referUvs.toString()));
-				Iterator<Object> results = referUvs.iterator();
-				/* 广告投放 */
-				if (CollectionUtil.isNotEmpty(results)) {
-					do {
-						JSONObject result = (JSONObject) results.next();
-						if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime.toString())), ftime)) {
-							return StrUtil.toString(result.get(Constants.ru.uv.toString()));
-						}
-					} while (results.hasNext());
-				}
+			if (!loginFlag) {
+				return null;
 			}
+			JSONObject data = JSONUtil.parseObj(resp).getJSONObject(Rc.data.toString());
+			if (JSONUtil.isNull(data)) {
+				return null;
+			}
+			JSONArray referUvs = data.getJSONArray(Constants.ru.referUvs.toString());
+			if (JSONUtil.isNull(referUvs)) {
+				return null;
+			}
+			Iterator<Object> results = referUvs.iterator();
+			if (CollectionUtil.isEmpty(results)) {
+				return null;
+			}
+			/* 广告投放 */
+			do {
+				JSONObject result = (JSONObject) results.next();
+				if (StrUtil.equalsIgnoreCase(result.getStr(Rc.ftime.toString()), ftime) && StrUtil.equalsIgnoreCase(result.getStr(Constants.ru.refer.toString()), rf)) {
+					return result.getStr(Constants.ru.uv.toString());
+				}
+			} while (results.hasNext());
 		} catch (Throwable ex) {
 			log.error("getReferUvs 失败:{}", ex.getMessage());
 		}
@@ -340,8 +375,7 @@ public class RunHandle {
 				if (CollectionUtil.isNotEmpty(results)) {
 					do {
 						JSONObject result = (JSONObject) results.next();
-						if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime.toString())), ftime)
-								&& StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.ad.adType.toString())), at)) {
+						if (StrUtil.equalsIgnoreCase(result.getStr(Rc.ftime.toString()), ftime) && StrUtil.equalsIgnoreCase(result.getStr(Constants.ad.adType.toString()), at)) {
 							rts.setAdIncome(millionNumber(result));
 						}
 					} while (results.hasNext());
@@ -356,8 +390,7 @@ public class RunHandle {
 				if (CollectionUtil.isNotEmpty(results)) {
 					do {
 						JSONObject result = (JSONObject) results.next();
-						if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime.toString())), ftime)
-								&& StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.ad.adType.toString())), at)) {
+						if (StrUtil.equalsIgnoreCase(result.getStr(Rc.ftime.toString()), ftime) && StrUtil.equalsIgnoreCase(result.getStr(Constants.ad.adType.toString()), at)) {
 							rts.setQqChannel(millionNumber(result));
 						}
 					} while (results.hasNext());
@@ -372,8 +405,7 @@ public class RunHandle {
 				if (CollectionUtil.isNotEmpty(results)) {
 					do {
 						JSONObject result = (JSONObject) results.next();
-						if (StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Rc.ftime.toString())), ftime)
-								&& StrUtil.equalsIgnoreCase(StrUtil.toString(result.get(Constants.ad.adType.toString())), at)) {
+						if (StrUtil.equalsIgnoreCase(result.getStr(Rc.ftime.toString()), ftime) && StrUtil.equalsIgnoreCase(result.getStr(Constants.ad.adType.toString()), at)) {
 							rts.setBuyChannel(millionNumber(result));
 						}
 					} while (results.hasNext());
@@ -389,15 +421,18 @@ public class RunHandle {
 		String resp = post(Constants.uri.adDataDailyUri, StrUtil.toString(cookies), StrUtil.toString(params));
 		boolean loginFlag = loginCheck(resp, Constants.uri.adDataDailyUri, params.get(Rc.appid.toString()));
 		if (loginFlag) {
-			Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
-			return JSONUtil.parseArray(JSONUtil.parseObj(data).get(Constants.ad.AdDataDailyList.toString()));
+			JSONObject data = JSONUtil.parseObj(resp).getJSONObject(Rc.data.toString());
+			if (JSONUtil.isNull(data)) {
+				return null;
+			}
+			return data.getJSONArray(Constants.ad.AdDataDailyList.toString());
 		}
 		return null;
 	}
 
 	protected BigDecimal millionNumber(JSONObject result) {
 		synchronized (result) {
-			String number = StrUtil.toString(result.get(Constants.ad.revenue.toString()));
+			String number = result.getStr(Constants.ad.revenue.toString());
 			return NumberUtil.div(StrUtil.isNotBlank(number) ? number : "0", Constants.million, 2);
 		}
 	}
