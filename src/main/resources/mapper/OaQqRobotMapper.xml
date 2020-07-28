@@ -7,6 +7,7 @@
     type="com.author.commons.beans.models.OaQqRobot">
     <id column="id" property="id" />
     <result column="app_id" property="appId" />
+    <result column="email" property="email" />
     <result column="call_persons" property="callPersons" />
     <result column="ad_send" property="adSend" />
     <result column="ua_wait" property="uaWait" />
@@ -22,7 +23,7 @@
 
   <!-- 通用查询结果列 -->
   <sql id="Base_Column_List">
-    id, app_id, call_persons, ad_send, ua_wait, uw_time, ad_income, qq_channel, buy_channel, handle_date, valid, create_time, update_time
+    id, app_id, email, call_persons, ad_send, ua_wait, uw_time, ad_income, qq_channel, buy_channel, handle_date, valid, create_time, update_time
   </sql>
   <insert id="insertActive">
     INSERT INTO oa_qq_robot
@@ -32,6 +33,9 @@
       </if>
       <if test="appId != null">
         app_id,
+      </if>
+      <if test="email != null">
+        email,
       </if>
       <if test="handleDate != null">
         handle_date,
@@ -68,6 +72,9 @@
       <if test="appId != null">
         #{appId},
       </if>
+      <if test="email != null">
+        #{email},
+      </if>
       <if test="handleDate != null">
         #{handleDate},
       </if>
@@ -103,6 +110,9 @@
       </if>
       <if test="appId != null">
         app_id = #{appId},
+      </if>
+      <if test="email != null">
+        email = #{email},
       </if>
       <if test="handleDate != null">
         handle_date = #{handleDate},

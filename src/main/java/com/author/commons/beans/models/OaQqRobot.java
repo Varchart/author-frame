@@ -22,56 +22,61 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class OaQqRobot extends BaseEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * 应用编号
-	 */
-	private Long appId;
+  /**
+   * 应用编号
+   */
+  private Long appId;
 
-	/**
-	 * 访问人数
-	 */
-	private Long callPersons;
+  /**
+   * QQ小程序开发平台账号
+   */
+  private String email;
 
-	/**
-	 * 广告投放
-	 */
-	private Long adSend;
+  /**
+   * 访问人数
+   */
+  private Long callPersons;
 
-	/**
-	 * 活跃留存
-	 */
-	private BigDecimal uaWait;
+  /**
+   * 广告投放
+   */
+  private Long adSend;
 
-	/**
-	 * 停留时长
-	 */
-	private String uwTime;
+  /**
+   * 活跃留存
+   */
+  private BigDecimal uaWait;
 
-	/**
-	 * 广告收入
-	 */
-	private BigDecimal adIncome;
+  /**
+   * 停留时长
+   */
+  private String uwTime;
 
-	/**
-	 * Q自有渠道
-	 */
-	private BigDecimal qqChannel;
+  /**
+   * 广告收入
+   */
+  private BigDecimal adIncome;
 
-	/**
-	 * 买量渠道
-	 */
-	private BigDecimal buyChannel;
+  /**
+   * Q自有渠道
+   */
+  private BigDecimal qqChannel;
 
-	/**
-	 * 数据时间(yyyyMMdd)
-	 */
-	private String handleDate;
+  /**
+   * 买量渠道
+   */
+  private BigDecimal buyChannel;
 
-	/**
-	 * 是否有效(1-y,0-n)
-	 */
-	private Boolean valid;
+  /**
+   * 数据时间(yyyyMMdd)
+   */
+  private String handleDate;
+
+  /**
+   * 是否有效(1-y,0-n)
+   */
+  private Boolean valid;
 
 }

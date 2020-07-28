@@ -13,59 +13,64 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 public class RobotDTO extends BaseEntity {
-	/**
-	 * 应用编号
-	 */
-	private Long appId;
+  /**
+   * 应用编号
+   */
+  private Long appId;
 
-	/**
-	 * 访问人数
-	 */
-	private Long callPersons;
+  /**
+   * QQ小程序开放平台账号
+   */
+  private String email;
 
-	/**
-	 * 广告投放
-	 */
-	private Long adSend;
+  /**
+   * 访问人数
+   */
+  private Long callPersons;
 
-	/**
-	 * 活跃留存
-	 */
-	private BigDecimal auWait;
+  /**
+   * 广告投放
+   */
+  private Long adSend;
 
-	/**
-	 * 停留时长
-	 */
-	private String uwTime;
+  /**
+   * 活跃留存
+   */
+  private BigDecimal auWait;
 
-	/**
-	 * 广告收入
-	 */
-	private BigDecimal adIncome;
+  /**
+   * 停留时长
+   */
+  private String uwTime;
 
-	/**
-	 * Q自有渠道
-	 */
-	private BigDecimal qqChannel;
+  /**
+   * 广告收入
+   */
+  private BigDecimal adIncome;
 
-	/**
-	 * 买量渠道
-	 */
-	private BigDecimal buyChannel;
+  /**
+   * Q自有渠道
+   */
+  private BigDecimal qqChannel;
 
-	/**
-	 * 数据时间(yyyyMMdd)
-	 */
-	private String handleDate;
+  /**
+   * 买量渠道
+   */
+  private BigDecimal buyChannel;
 
-	/**
-	 * 是否有效(1-y,0-n)
-	 */
-	private Boolean valid;
-	
-	public OaQqRobot po() {
-		OaQqRobot po = new OaQqRobot();
-		BeanUtil.copyProperties(this, po, false);
-		return po;
-	}
+  /**
+   * 数据时间(yyyyMMdd)
+   */
+  private String handleDate;
+
+  /**
+   * 是否有效(1-y,0-n)
+   */
+  private Boolean valid;
+
+  public OaQqRobot po() {
+    OaQqRobot po = new OaQqRobot();
+    BeanUtil.copyProperties(this, po, false);
+    return po;
+  }
 }

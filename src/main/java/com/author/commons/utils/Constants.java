@@ -51,6 +51,11 @@ public final class Constants {
     public final static String operationDataUri = "https://q.qq.com/pb/GetOperationData";
     public final static String referUvsUri = "https://q.qq.com/pb/GetReferUvs";
     public final static String adDataDailyUri = "https://q.qq.com/pb/GetAdDataDaily";
+    public final static String getDeveloper = "https://q.qq.com/pb/GetDeveloper";
+  }
+
+  public enum di {
+    developerInfo, email;
   }
 
   public enum gs {

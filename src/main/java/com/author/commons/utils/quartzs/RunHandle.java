@@ -22,7 +22,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.text.UnicodeUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -45,7 +44,7 @@ public class RunHandle {
   /*
    * cron = "0 0 0 * * ?" 凌晨00点执行 fixedDelay = 5000 每5s执行一次
    */
-  @Scheduled(cron = "0 0 0 * * ?")
+  @Scheduled(fixedDelay = 1000*60*5)
   public void run1data() {
     StringBuffer cookies = null;
     String ks = MessageFormat.format(Constants.redis.account_data, Rc.quid + StrUtil.COLON + Constants.ask);
@@ -72,6 +71,9 @@ public class RunHandle {
           }
 
           record.setAppId(StrUtil.isNotBlank(appID) ? Long.valueOf(appID) : null);
+
+          Object email = getDeveloper(appID, cookies);
+          record.setEmail(StrUtil.toString(email));
 
           String ftime = DateUtil.format(customDate(-1).getTime(), DatePattern.PURE_DATE_PATTERN);
           record.setHandleDate(ftime);
@@ -114,6 +116,32 @@ public class RunHandle {
       return false;
     }
     return true;
+  }
+
+  /**
+   * 获得账号
+   * @param appID
+   * @param cookies
+   * @return
+   */
+  protected Object getDeveloper(String appID, StringBuffer cookies) {
+    try {
+      /* 获得账号 */
+      String resp = get(Constants.uri.getDeveloper, StrUtil.toString(cookies), null);
+      boolean loginFlag = loginCheck(resp, Constants.uri.getDeveloper);
+      if (loginFlag) {
+        Object data = JSONUtil.parseObj(resp).get(Rc.data.toString());
+        if (null != data) {
+          Object developerInfo = JSONUtil.parseObj(data).get(Constants.di.developerInfo.toString());
+          if(null != developerInfo) {
+        	  return JSONUtil.parseObj(developerInfo).get(Constants.di.email.toString());
+          }
+        }
+      }
+    } catch (Throwable ex) {
+      log.error("getDeveloper 失败:{}", ex.getMessage());
+    }
+    return null;
   }
 
   /**
@@ -389,6 +417,10 @@ public class RunHandle {
 
   protected String post(String uri, String cookies, String params) {
     return HttpRequest.post(uri).header(Rc.cookie.toString(), cookies).body(params).execute().body();
+  }
+
+  protected String get(String uri, String cookies, String params) {
+    return HttpRequest.get(uri).header(Rc.cookie.toString(), cookies).body(params).execute().body();
   }
 
   protected Calendar customDate(int time) {
