@@ -23,7 +23,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONArray;
@@ -109,8 +108,8 @@ public class RunHandle {
 	 */
 	protected boolean loginCheck(String resp, String uri, Object appID) {
 		if (JSONUtil.isJson(resp)) {
-			JSONObject code = JSONUtil.parseObj(resp).getJSONObject(Rc.code.toString());
-			if (ObjectUtil.equal(Constants.log.NOT_LOGIN.c(), code)) {
+			String rtnCode = JSONUtil.parseObj(resp).getStr(Rc.code.toString());
+			if (StrUtil.equalsIgnoreCase(Constants.log.NOT_LOGIN.c(), rtnCode)) {
 				/* 登录态校验失败 */
 				log.warn("{}({}):{}, {}", Constants.log.NOT_LOGIN.m(), appID, uri, DateUtil.now());
 				return false;
