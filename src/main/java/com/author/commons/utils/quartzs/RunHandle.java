@@ -15,8 +15,8 @@ import com.author.commons.beans.ChannelDetailDTO;
 import com.author.commons.beans.models.OaQqRobot;
 import com.author.commons.service.IOaQqRobotService;
 import com.author.commons.utils.Constants;
+import com.author.commons.utils.caches.RedisImpl;
 import com.author.commons.utils.enums.Rc;
-import com.author.commons.utils.redis.RedisImpl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;

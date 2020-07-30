@@ -1,4 +1,4 @@
-package com.author.commons.utils.redis;
+package com.author.commons.utils.caches;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;

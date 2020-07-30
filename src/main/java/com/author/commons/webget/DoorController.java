@@ -16,9 +16,9 @@ import com.author.commons.beans.DataBean;
 import com.author.commons.beans.HeadBean;
 import com.author.commons.utils.Constants;
 import com.author.commons.utils.Result;
+import com.author.commons.utils.caches.RedisImpl;
 import com.author.commons.utils.enums.Rc;
 import com.author.commons.utils.quartzs.RunHandle;
-import com.author.commons.utils.redis.RedisImpl;
 import com.author.commons.utils.resps.Response;
 
 import cn.hutool.core.util.StrUtil;
