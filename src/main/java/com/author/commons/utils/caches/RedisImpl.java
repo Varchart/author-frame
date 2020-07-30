@@ -54,4 +54,15 @@ public class RedisImpl {
 		}
 		return keyExists(k);
 	}
+
+	public boolean redisHandle(String k, String v, int c) {
+		switch (c) {
+		case Constants.redis.redis1str:
+			break;
+		case Constants.redis.redis2set:
+			redisTemplete.opsForSet().remove(k, v);
+			break;
+		}
+		return keyExists(k);
+	}
 }
