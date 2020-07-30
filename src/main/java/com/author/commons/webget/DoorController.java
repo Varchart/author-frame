@@ -69,8 +69,8 @@ public class DoorController {
 		return Response.genSuccessResult();
 	}
 
-	@RequestMapping(value = "/headDel", method = RequestMethod.POST)
-	public Result headDel(@RequestBody @Valid HeadBean record, BindingResult results) {
+	@RequestMapping(value = "/headRemove", method = RequestMethod.POST)
+	public Result headRemove(@RequestBody @Valid HeadBean record, BindingResult results) {
 		if (results.hasErrors()) {
 			return Response.genFailResult(results.getFieldError().getDefaultMessage());
 		}
