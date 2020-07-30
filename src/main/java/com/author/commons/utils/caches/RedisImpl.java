@@ -58,6 +58,9 @@ public class RedisImpl {
 	public boolean redisHandle(String k, String v, int c) {
 		switch (c) {
 		case Constants.redis.redis1str:
+			if (keyExists(k)) {
+				redisTemplete.delete(k);
+			}
 			break;
 		case Constants.redis.redis2set:
 			redisTemplete.opsForSet().remove(k, v);
