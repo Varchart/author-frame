@@ -69,6 +69,16 @@ public class DoorController {
 		return Response.genSuccessResult();
 	}
 
+	@RequestMapping(value = "/headDel", method = RequestMethod.POST)
+	public Result headDel(@RequestBody @Valid HeadBean record, BindingResult results) {
+		if (results.hasErrors()) {
+			return Response.genFailResult(results.getFieldError().getDefaultMessage());
+		}
+		cacheService.redisHandle(MessageFormat.format(Constants.redis.account_data, Rc.quid + StrUtil.COLON + record.getAppID()), record.getQuID(), Constants.redis.redis1str);
+		cacheService.redisHandle(MessageFormat.format(Constants.redis.account_data, Rc.qticket + StrUtil.COLON + record.getAppID()), record.getQticket(), Constants.redis.redis1str);
+		return Response.genSuccessResult();
+	}
+
 	@RequestMapping(value = "/handleData", method = RequestMethod.POST)
 	public void handleData() {
 		handleService.run1data();
