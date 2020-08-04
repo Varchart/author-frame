@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.author.commons.beans.dbs.RoutingDataSource;
-import com.author.commons.utils.enums.DBNodes;
+import com.author.commons.utils.enums.Ndb;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 
 @Configuration
@@ -41,8 +41,8 @@ public class DruidConfig {
 	@Bean
 	public DataSource myRoutingDataSource(@Qualifier("reader") DataSource reader, @Qualifier("writer") DataSource writer) {
 		LinkedHashMap<Object, Object> targetDataSources = new LinkedHashMap<>();
-		targetDataSources.put(DBNodes.reader.toString(), reader);
-		targetDataSources.put(DBNodes.writer.toString(), writer);
+		targetDataSources.put(Ndb.reader.toString(), reader);
+		targetDataSources.put(Ndb.writer.toString(), writer);
 		RoutingDataSource routingDataSource = new RoutingDataSource();
 		routingDataSource.setDefaultTargetDataSource(reader);
 		routingDataSource.setTargetDataSources(targetDataSources);

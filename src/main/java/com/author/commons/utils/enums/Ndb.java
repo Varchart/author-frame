@@ -1,5 +1,5 @@
 package com.author.commons.utils.enums;
 
-public enum DBNodes {
+public enum Ndb {
 	reader, writer;
 }

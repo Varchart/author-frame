@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component;
 
 import com.author.commons.utils.aspects.annotations.Noder;
 import com.author.commons.utils.dbs.DBContextHolder;
-import com.author.commons.utils.enums.DBNodes;
+import com.author.commons.utils.enums.Ndb;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Aspect
 @Component
-public class DSAspect {
+public class DsAspect {
 	@Pointcut("@annotation(com.author.commons.utils.aspects.annotations.Noder)")
 	public void noder() {
 	}
@@ -33,7 +33,7 @@ public class DSAspect {
 			Method method = point.getTarget().getClass().getMethod(methodName, parameterTypes);
 			Noder methodAnnotation = method.getAnnotation(Noder.class);
 			methodAnnotation = methodAnnotation == null ? annotationOfClass : methodAnnotation;
-			DBNodes dataSourceType = methodAnnotation != null && methodAnnotation.node() != null ? methodAnnotation.node() : DBNodes.reader;
+			Ndb dataSourceType = methodAnnotation != null && methodAnnotation.node() != null ? methodAnnotation.node() : Ndb.reader;
 			DBContextHolder.setDBSource(dataSourceType.name());
 		} catch (NoSuchMethodException ex) {
 			log.warn("Aspect dbNoder inspect exception. {}", ex.getMessage());

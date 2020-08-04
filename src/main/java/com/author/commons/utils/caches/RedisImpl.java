@@ -9,7 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.author.commons.utils.Constants.redis;
-import com.author.commons.utils.enums.Cache;
+import com.author.commons.utils.enums.Rdb;
 
 import cn.hutool.core.util.NumberUtil;
 
@@ -75,7 +75,7 @@ public class RedisImpl {
 
 	public boolean convertDB(int db) {
 		if (db <= 0) {
-			db = Cache.db2.c();
+			db = Rdb.db2.c();
 		}
 		LettuceConnectionFactory factory = (LettuceConnectionFactory) redisTemplate.getConnectionFactory();
 		if (null == factory) {
