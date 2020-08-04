@@ -19,7 +19,6 @@ import com.author.commons.utils.Constants;
 import com.author.commons.utils.Constants.redis;
 import com.author.commons.utils.Result;
 import com.author.commons.utils.caches.RedisImpl;
-import com.author.commons.utils.enums.Cache;
 import com.author.commons.utils.enums.Rc;
 import com.author.commons.utils.quartzs.RunHandle;
 import com.author.commons.utils.quartzs.RyGameRun;
