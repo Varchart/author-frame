@@ -4,53 +4,56 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.author.commons.utils.Constants.redis;
 
+import cn.hutool.core.util.NumberUtil;
+
 @Service
 public class RedisImpl {
 	@Autowired
-	private RedisTemplate<String, String> redisTemplete;
+	private RedisTemplate<String, String> redisTemplate;
 
 	protected boolean keyExists(String k) {
-		return redisTemplete.hasKey(k);
+		return redisTemplate.hasKey(k);
 	}
 
 	public Object redisResults(String k, int c, long s, long e) {
 		if (keyExists(k)) {
 			switch (c) {
 			case redis.redis1str:
-				return redisTemplete.opsForValue().get(k);
+				return redisTemplate.opsForValue().get(k);
 			case redis.redis2set:
-				return redisTemplete.opsForSet().members(k);
+				return redisTemplate.opsForSet().members(k);
 			case redis.redis3hash:
-				return redisTemplete.opsForHash().entries(k);
+				return redisTemplate.opsForHash().entries(k);
 			case redis.redis4list:
-				return redisTemplete.opsForList().range(k, s, e);
+				return redisTemplate.opsForList().range(k, s, e);
 			case redis.redis5zset:
-				return redisTemplete.opsForZSet().range(k, s, e);
+				return redisTemplate.opsForZSet().range(k, s, e);
 			}
 		}
 		return null;
 	}
 
 	public Set<?> keys(String k) {
-		return redisTemplete.keys(k);
+		return redisTemplate.keys(k);
 	}
 
 	public boolean redisHandle(String k, String v, int c, long t) {
 		switch (c) {
 		case redis.redis1str:
-			redisTemplete.opsForValue().set(k, v);
+			redisTemplate.opsForValue().set(k, v);
 			break;
 		case redis.redis2set:
-			redisTemplete.opsForSet().add(k, v);
+			redisTemplate.opsForSet().add(k, v);
 			break;
 		}
 		if (t > 0) {
-			redisTemplete.expire(k, t, TimeUnit.SECONDS);
+			redisTemplate.expire(k, t, TimeUnit.SECONDS);
 		}
 		return keyExists(k);
 	}
@@ -59,13 +62,28 @@ public class RedisImpl {
 		switch (c) {
 		case redis.redis1str:
 			if (keyExists(k)) {
-				redisTemplete.delete(k);
+				redisTemplate.delete(k);
 			}
 			break;
 		case redis.redis2set:
-			redisTemplete.opsForSet().remove(k, v);
+			redisTemplate.opsForSet().remove(k, v);
 			break;
 		}
 		return keyExists(k);
+	}
+
+	public boolean convertDB(int db) {
+		LettuceConnectionFactory factory = (LettuceConnectionFactory) redisTemplate.getConnectionFactory();
+		if (null == factory) {
+			return false;
+		}
+		if (NumberUtil.compare(db, factory.getDatabase()) == 0) {
+			return false;
+		}
+		factory.setDatabase(db);
+		redisTemplate.setConnectionFactory(factory);
+		factory.resetConnection();
+		factory.afterPropertiesSet();
+		return true;
 	}
 }

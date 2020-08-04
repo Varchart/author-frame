@@ -15,15 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.author.commons.beans.DataBean;
 import com.author.commons.beans.HeadBean;
-import com.author.commons.beans.RobotDTO;
-import com.author.commons.beans.games.StatParamsDTO;
-import com.author.commons.beans.models.OaQqRobot;
-import com.author.commons.service.IOaQqRobotService;
-import com.author.commons.service.games.OaAdvStatService;
 import com.author.commons.utils.Constants;
 import com.author.commons.utils.Constants.redis;
 import com.author.commons.utils.Result;
 import com.author.commons.utils.caches.RedisImpl;
+import com.author.commons.utils.enums.Cache;
 import com.author.commons.utils.enums.Rc;
 import com.author.commons.utils.quartzs.RunHandle;
 import com.author.commons.utils.quartzs.RyGameRun;
@@ -52,11 +48,6 @@ public class DoorController {
 
 	@Resource
 	private RyGameRun gameRunService;
-
-	@Resource
-	private IOaQqRobotService robotService;
-	@Resource
-	private OaAdvStatService statService;
 
 	@RequestMapping(value = "/requestAuthor")
 	public void requestAuthor(@RequestBody DataBean record) {
