@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.author.commons.dao.games.OaAdvValueSheetMapper">
+    <resultMap id="BaseResultMap" type="com.author.commons.beans.games.OaAdvValueSheet">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="product_id" jdbcType="BIGINT" property="productId"/>
+        <result column="product_appid" jdbcType="VARCHAR" property="productAppid"/>
+        <result column="adv_channel_id" jdbcType="BIGINT" property="advChannelId"/>
+        <result column="adv_app_id" jdbcType="BIGINT" property="advAppId"/>
+        <result column="adv_app_appid" jdbcType="VARCHAR" property="advAppAppid"/>
+        <result column="adv_name" jdbcType="VARCHAR" property="advName"/>
+        <result column="summarydate" jdbcType="DATE" property="summarydate"/>
+        <result column="show_number" jdbcType="BIGINT" property="showNumber"/>
+        <result column="click_ad" jdbcType="BIGINT" property="clickAd"/>
+        <result column="success_open" jdbcType="BIGINT" property="successOpen"/>
+        <result column="unique_click" jdbcType="BIGINT" property="uniqueClick"/>
+        <result column="reality_data" jdbcType="BIGINT" property="realityData"/>
+        <result column="valid_click" jdbcType="BIGINT" property="validClick"/>
+        <result column="duty_rate" jdbcType="DECIMAL" property="dutyRate"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="income" jdbcType="DECIMAL" property="income"/>
+        <result column="translation" jdbcType="DECIMAL" property="translation"/>
+        <result column="cost" jdbcType="DECIMAL" property="cost"/>
+        <result column="cooperation_id" jdbcType="INTEGER" property="cooperationId"/>
+        <result column="cooperation_name" jdbcType="VARCHAR" property="cooperationName"/>
+        <result column="magnitude" jdbcType="VARCHAR" property="magnitude"/>
+        <result column="is_formal" jdbcType="INTEGER" property="isFormal"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+
+    <resultMap id="customResultMap" type="com.author.commons.beans.games.OaAdvValueSheetDTO"></resultMap>
+
+    <sql id="conditions">
+        oa_adv_value_sheet advSheet
+        <where>
+            <if test="productId != null">
+                advSheet.product_id = #{productId}
+            </if>
+            <if test="productAppid != null">
+                AND advSheet.product_appid = #{productAppid}
+            </if>
+            <if test="advChannelId != null">
+                AND advSheet.adv_channel_id = #{advChannelId}
+            </if>
+            <if test="advAppId != null">
+                AND advSheet.adv_app_id = #{advAppId}
+            </if>
+            <if test="advAppAppid != null">
+                AND advSheet.adv_app_appid = #{advAppAppid}
+            </if>
+            <if test="cooperationId != null">
+                AND advSheet.cooperation_id = #{cooperationId}
+            </if>
+        </where>
+    </sql>
+
+    <select id="queryByParams" resultMap="customResultMap">
+        SELECT advSheet.price FROM <include refid="conditions"/> ORDER BY update_time DESC
+    </select>
+</mapper>

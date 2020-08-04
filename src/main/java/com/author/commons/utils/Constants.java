@@ -13,6 +13,7 @@ public final class Constants {
 	public final static char split = '\u003b';
 	public final static char equals = '\u003d';
 	public final static String million = "1000000";
+	public final static int threadNumber = 15;
 	public final static String AUTHOR_URL = "https://developers.e.qq.com/oauth/authorize?client_id={0}&redirect_uri={1}&state={2}";
 	public final static String DEFAULT_CMD = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
 
@@ -52,6 +53,15 @@ public final class Constants {
 		public final static String referUvsUri = "https://q.qq.com/pb/GetReferUvs";
 		public final static String adDataDailyUri = "https://q.qq.com/pb/GetAdDataDaily";
 		public final static String getDeveloper = "https://q.qq.com/pb/GetDeveloper";
+	}
+	
+	public final class dt{
+		public final static String HH_MM = " 00:00";
+  public final static String HH_MM_SS = " 00:00:00";
+	}
+	
+	public final class df{
+  public final static String YYYY_MM_DD_HH = "yyyy-MM-dd HH";
 	}
 
 	public enum di {

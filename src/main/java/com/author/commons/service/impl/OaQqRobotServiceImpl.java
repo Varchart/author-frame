@@ -22,6 +22,7 @@ public class OaQqRobotServiceImpl extends ServiceImpl<OaQqRobotMapper, OaQqRobot
 	@Autowired
 	private OaQqRobotMapper robotMapper;
 
+	@Override
 	public boolean saveActive(OaQqRobot record) {
 		return SqlHelper.retBool(robotMapper.insertActive(record));
 	}

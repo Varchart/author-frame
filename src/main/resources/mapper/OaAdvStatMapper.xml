@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.author.commons.dao.games.OaAdvStatMapper">
+    <resultMap id="BaseResultMap" type="com.author.commons.beans.games.OaAdvStat">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="product_id" jdbcType="BIGINT" property="productId"/>
+        <result column="product_appid" jdbcType="VARCHAR" property="productAppid"/>
+        <result column="adv_channel_id" jdbcType="BIGINT" property="advChannelId"/>
+        <result column="adv_app_id" jdbcType="BIGINT" property="advAppId"/>
+        <result column="adv_app_appid" jdbcType="VARCHAR" property="advAppAppid"/>
+        <result column="adv_id" jdbcType="BIGINT" property="advId"/>
+        <result column="adv_name" jdbcType="VARCHAR" property="advName"/>
+        <result column="position_id" jdbcType="INTEGER" property="positionId"/>
+        <result column="summarydate" jdbcType="DATE" property="summarydate"/>
+        <result column="show_number" jdbcType="BIGINT" property="showNumber"/>
+        <result column="click_ad" jdbcType="BIGINT" property="clickAd"/>
+        <result column="success_open" jdbcType="BIGINT" property="successOpen"/>
+        <result column="unique_click" jdbcType="BIGINT" property="uniqueClick"/>
+        <result column="reality_data" jdbcType="BIGINT" property="realityData"/>
+        <result column="valid_click" jdbcType="BIGINT" property="validClick"/>
+        <result column="duty_rate" jdbcType="DECIMAL" property="dutyRate"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="income" jdbcType="DECIMAL" property="income"/>
+        <result column="translation" jdbcType="DECIMAL" property="translation"/>
+        <result column="cost" jdbcType="DECIMAL" property="cost"/>
+        <result column="cooperation_id" jdbcType="INTEGER" property="cooperationId"/>
+        <result column="cooperation_name" jdbcType="VARCHAR" property="cooperationName"/>
+        <result column="magnitude" jdbcType="VARCHAR" property="magnitude"/>
+        <result column="status" jdbcType="BIT" property="status"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+    </resultMap>
+    <resultMap id="customResultMap" type="com.author.commons.beans.games.OaAdvStatDTO">
+    </resultMap>
+    <!--<select id="advertStatPersist" resultMap="customResultMap">
+        SELECT advLine.product_id, advPro.appid AS product_appid, advLine.adv_channel_id, advLine.adv_app_id,
+        advLine.appid AS adv_app_appid, advLine.id AS adv_id, advLine.title AS adv_name, advLine.position_id,
+        showCount.show_number, advApp.price, advApp.price_nodes, advApp.cooperation_type AS cooperation_id,
+        (SELECT DICT_NAME FROM oa_admin_dictionary dict WHERE dict.is_del = 0 AND dict.STATUS = 1 AND dict.dict_value =
+        advApp.cooperation_type AND dict.pid = 15) AS cooperation_name, advApp.magnitude
+        FROM oa_adv_online advLine, oa_operate_position advPosition, oa_operate_product advPro, oa_adv_app advApp,
+        (SELECT advLine.id, advLine.product_id, COUNT( 0 ) AS show_number FROM oa_operate_position position INNER JOIN
+        oa_adv_online advLine ON position.id = advLine.position_id AND position.is_del = 0 AND position.STATUS = 1 AND
+        advLine.STATUS = 1 AND advLine.is_del = 0
+        GROUP BY advLine.id, advLine.product_id) AS showCount
+        <where>
+            showCount.product_id = advLine.product_id
+            AND advLine.position_id = advPosition.id
+            AND advPro.id = advLine.product_id
+            AND advApp.id = advLine.adv_app_id
+            AND showCount.id = advLine.id
+            AND advPosition.is_del = 0
+            AND advPosition.STATUS = 1
+            AND advLine.STATUS = 1
+            AND advLine.is_del = 0
+            AND advPro.is_del = 0
+            AND advPro.STATUS = 1
+            AND advApp.is_del = 0
+            AND advApp.STATUS = 1
+            AND advLine.id = #{advId}
+            AND advLine.product_id = #{productId}
+        </where>
+    </select>-->
+
+    <select id="advertStatPersist" resultMap="customResultMap">
+        SELECT advLine.product_id, advPro.appid AS product_appid, advLine.adv_channel_id, advLine.adv_app_id,
+        advLine.appid AS adv_app_appid, advLine.id AS adv_id, advLine.title AS adv_name, advLine.position_id,
+        showCount.show_number, advApp.price, advApp.price_nodes, advApp.cooperation_type AS cooperation_id,
+        (SELECT DICT_NAME FROM oa_admin_dictionary dict WHERE dict.dict_value =
+        advApp.cooperation_type AND dict.pid = 15) AS cooperation_name, advApp.magnitude
+        FROM oa_adv_online advLine, oa_operate_position advPosition, oa_operate_product advPro, oa_adv_app advApp,
+        (SELECT advLine.id, advLine.product_id, COUNT( 0 ) AS show_number FROM oa_operate_position position INNER JOIN
+        oa_adv_online advLine ON position.id = advLine.position_id
+        GROUP BY advLine.id, advLine.product_id) AS showCount
+        <where>
+            showCount.product_id = advLine.product_id
+            AND advLine.position_id = advPosition.id
+            AND advPro.id = advLine.product_id
+            AND advApp.id = advLine.adv_app_id
+            AND showCount.id = advLine.id
+            AND advLine.id = #{advId}
+            AND advLine.product_id = #{productId}
+        </where>
+    </select>
+
+    <!-- 用于验证记录是否存在 -->
+    <select id="exists" resultType="java.lang.Integer">
+        SELECT COUNT(0) FROM oa_adv_stat stat
+        <where>
+            stat.adv_id = #{advId} AND stat.product_id = #{productId} AND stat.summarydate = #{summaryDate}
+        </where>
+    </select>
+</mapper>

@@ -18,5 +18,5 @@ public class DataBean {
 	private String refreshGrantType = "refresh_token";
 	private String codeGrantType = "authorization_code";
 	private String cmd;
-	private String authorCodeRedirectUri = "http://javasttts.renyouwangluo.cn/api/data/{0}/giveAuthorCode";
+	private String authorCodeRedirectUri = "http://javasttts.renyouwangluo.cn/api/data/{0}-{1}/giveAuthorCode";
 }

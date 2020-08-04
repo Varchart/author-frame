@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.author.commons.dao.games.GameDauMapper">
+    <resultMap id="BaseResultMap" type="com.author.commons.beans.games.GameDau">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="ak" jdbcType="VARCHAR" property="ak"/>
+        <result column="open_id" jdbcType="VARCHAR" property="openId"/>
+        <result column="uu" jdbcType="VARCHAR" property="uu"/>
+        <result column="create_date" jdbcType="DATE" property="createDate"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="login_date" jdbcType="DATE" property="loginDate"/>
+        <result column="login_time" jdbcType="TIMESTAMP" property="loginTime"/>
+    </resultMap>
+
+    <select id="queryDau" statementType="STATEMENT" resultType="int">
+        <if test="tableName != null and tableName != ''">
+            SELECT COUNT(DISTINCT open_id) FROM ${tableName}
+            <where>
+                <if test="startTime != null and startTime != ''">
+                    <![CDATA[ login_time >= DATE_FORMAT('${startTime}', '%Y-%m-%d %H:%i:%s') ]]>
+                </if>
+                <if test="endTime != null and endTime != ''">
+                    AND <![CDATA[ login_time < DATE_FORMAT('${endTime}', '%Y-%m-%d %H:%i:%s') ]]>
+                </if>
+            </where>
+        </if>
+    </select>
+</mapper>

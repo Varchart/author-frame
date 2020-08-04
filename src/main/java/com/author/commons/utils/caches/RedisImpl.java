@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.author.commons.utils.Constants;
+import com.author.commons.utils.Constants.redis;
 
 @Service
 public class RedisImpl {
@@ -21,15 +21,15 @@ public class RedisImpl {
 	public Object redisResults(String k, int c, long s, long e) {
 		if (keyExists(k)) {
 			switch (c) {
-			case Constants.redis.redis1str:
+			case redis.redis1str:
 				return redisTemplete.opsForValue().get(k);
-			case Constants.redis.redis2set:
+			case redis.redis2set:
 				return redisTemplete.opsForSet().members(k);
-			case Constants.redis.redis3hash:
+			case redis.redis3hash:
 				return redisTemplete.opsForHash().entries(k);
-			case Constants.redis.redis4list:
+			case redis.redis4list:
 				return redisTemplete.opsForList().range(k, s, e);
-			case Constants.redis.redis5zset:
+			case redis.redis5zset:
 				return redisTemplete.opsForZSet().range(k, s, e);
 			}
 		}
@@ -42,10 +42,10 @@ public class RedisImpl {
 
 	public boolean redisHandle(String k, String v, int c, long t) {
 		switch (c) {
-		case Constants.redis.redis1str:
+		case redis.redis1str:
 			redisTemplete.opsForValue().set(k, v);
 			break;
-		case Constants.redis.redis2set:
+		case redis.redis2set:
 			redisTemplete.opsForSet().add(k, v);
 			break;
 		}
@@ -57,12 +57,12 @@ public class RedisImpl {
 
 	public boolean redisHandle(String k, String v, int c) {
 		switch (c) {
-		case Constants.redis.redis1str:
+		case redis.redis1str:
 			if (keyExists(k)) {
 				redisTemplete.delete(k);
 			}
 			break;
-		case Constants.redis.redis2set:
+		case redis.redis2set:
 			redisTemplete.opsForSet().remove(k, v);
 			break;
 		}

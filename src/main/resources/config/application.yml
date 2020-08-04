@@ -4,7 +4,7 @@ logging:
     config: classpath:log4j2.xml
 
 server:
-    port: 39888
+    port: 8888
 #Spring Config
 spring:
     application:
@@ -12,7 +12,7 @@ spring:
     datasource:
       type: com.alibaba.druid.pool.DruidDataSource
       druid:
-        one:
+        reader:
           db-type: mysql
           driver-class-name: com.mysql.cj.jdbc.Driver
           url: jdbc:mysql://172.19.163.13:3306/oasystem?useUnicode=true&characterEncoding=UTF8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&autoReconnect=true&allowMultiQueries=true
@@ -43,8 +43,8 @@ spring:
           filter:
             stat:
               merge-sql: true
-              slow-sql-millis: 5000
-        two:
+              slow-sql-millis: 30000
+        writer:
           db-type: mysql
           driver-class-name: com.mysql.cj.jdbc.Driver
           url: jdbc:mysql://101.133.137.101:3306/oasystem?useUnicode=true&characterEncoding=UTF8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&autoReconnect=true&allowMultiQueries=true
@@ -76,10 +76,12 @@ spring:
             stat:
               merge-sql: true
               slow-sql-millis: 5000
-    redis:      host: 172.19.163.13
+    redis:
+      host: 101.133.137.101
       port: 6379
       password: T2rJGEf8DbDAHhNW
-      timeout: 5000
+      timeout: 30000
+      database: 0
       jedis:
         pool:
           max-active: 100
