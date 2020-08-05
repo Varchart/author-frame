@@ -17,6 +17,7 @@ import com.author.commons.beans.DataBean;
 import com.author.commons.beans.HeadBean;
 import com.author.commons.utils.Constants;
 import com.author.commons.utils.Constants.redis;
+import com.author.commons.utils.aspects.annotations.CacheConvert;
 import com.author.commons.utils.Result;
 import com.author.commons.utils.caches.RedisImpl;
 import com.author.commons.utils.enums.Rc;
@@ -75,6 +76,7 @@ public class DoorController {
 		return Response.genSuccessResult();
 	}
 
+	@CacheConvert
 	@RequestMapping(value = "/headInit", method = RequestMethod.POST)
 	public Result headInit(@RequestBody @Valid HeadBean record, BindingResult results) {
 		if (results.hasErrors()) {
@@ -85,6 +87,7 @@ public class DoorController {
 		return Response.genSuccessResult();
 	}
 
+	@CacheConvert
 	@RequestMapping(value = "/headRemove", method = RequestMethod.POST)
 	public Result headRemove(@RequestBody @Valid HeadBean record, BindingResult results) {
 		if (results.hasErrors()) {
