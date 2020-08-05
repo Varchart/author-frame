@@ -10,6 +10,7 @@
     <java.version>1.8</java.version>
     <spring.boot.version>2.3.1.RELEASE</spring.boot.version>
     <mybatis.version>3.3.2</mybatis.version>
+    <java.version>1.8</java.version>
   </properties>
 
   <dependencies>
@@ -101,6 +102,10 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>1.5.4.RELEASE</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
         <executions>
           <execution>
             <goals>
