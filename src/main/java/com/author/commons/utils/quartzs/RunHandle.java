@@ -21,6 +21,7 @@ import com.author.commons.utils.Constants.rd;
 import com.author.commons.utils.Constants.redis;
 import com.author.commons.utils.Constants.ru;
 import com.author.commons.utils.Constants.uri;
+import com.author.commons.utils.aspects.annotations.CacheConvert;
 import com.author.commons.utils.caches.RedisImpl;
 import com.author.commons.utils.enums.Rc;
 
@@ -49,7 +50,8 @@ public class RunHandle {
 	/*
 	 * cron = "0 0 0 * * ?" 凌晨00点执行 fixedDelay = 5000 每5s执行一次
 	 */
-	@Scheduled(cron = "0 0 0 * * ?")
+	@CacheConvert
+	@Scheduled(cron = "0 30 1 * * ?")
 	public void run1data() {
 		StringBuffer cookies = null;
 		String ks = MessageFormat.format(redis.account_data, Rc.quid + StrUtil.COLON + Constants.ask);

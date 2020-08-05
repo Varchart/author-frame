@@ -59,7 +59,7 @@ public class CacheAspect {
 			CacheConvert methodAnnotation = method.getAnnotation(CacheConvert.class);
 			methodAnnotation = methodAnnotation == null ? annotationOfClass : methodAnnotation;
 			if (NumberUtil.compare(c, 0) == 0) {
-				dt = methodAnnotation != null && methodAnnotation.rb() != null ? methodAnnotation.rb() : Rdb.db2;
+				dt = methodAnnotation != null && methodAnnotation.rb() != null ? methodAnnotation.rb() : Rdb.db0;
 			} else {
 				dt = methodAnnotation != null && methodAnnotation.db() != null ? methodAnnotation.db() : Rdb.db2;
 			}
