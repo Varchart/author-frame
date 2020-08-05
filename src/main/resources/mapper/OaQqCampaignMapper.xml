@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.author.commons.dao.games.OaQqCampaignMapper">
+	<resultMap id="BaseResultMap" type="com.author.commons.beans.games.OaQqCampaign">
+		<id column="id" property="id" />
+		<result column="game_id" property="gameId" />
+		<result column="app_id" property="appId" />
+		<result column="account_id" property="accountId" />
+		<result column="campaign_id" property="campaignId" />
+		<result column="campaign_name" property="campaignName" />
+		<result column="campaign_type" property="campaignType" />
+		<result column="handle_date" property="handleDate" />
+		<result column="campaign_cost" property="campaignCost" />
+		<result column="valid" property="valid" />
+		<result column="create_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+	</resultMap>
+	<insert id="insertActive">
+		INSERT INTO oa_qq_campaign
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="gameId != null">
+				game_id,
+			</if>
+			<if test="appId != null">
+				app_id,
+			</if>
+			<if test="accountId != null">
+				account_id,
+			</if>
+			<if test="campaignId != null">
+				campaign_id,
+			</if>
+			<if test="campaignName != null">
+				campaign_name,
+			</if>
+			<if test="campaignType != null">
+				campaign_type,
+			</if>
+			<if test="handleDate != null">
+				handle_date,
+			</if>
+			<if test="campaignCost != null">
+				campaign_cost,
+			</if>
+			<if test="valid != null and valid != ''">
+				valid,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="gameId != null">
+				#{gameId},
+			</if>
+			<if test="appId != null">
+				#{appId},
+			</if>
+			<if test="accountId != null">
+				#{accountId},
+			</if>
+			<if test="campaignId != null">
+				#{campaignId},
+			</if>
+			<if test="campaignName != null">
+				#{campaignName},
+			</if>
+			<if test="campaignType != null">
+				#{campaignType},
+			</if>
+			<if test="handleDate != null">
+				#{handleDate},
+			</if>
+			<if test="campaignCost != null">
+				#{campaignCost},
+			</if>
+			<if test="valid != null and valid != ''">
+				#{valid},
+			</if>
+		</trim>
+		ON DUPLICATE KEY UPDATE
+		<trim suffixOverrides=",">
+			<if test="id != null">
+				id = #{id},
+			</if>
+			<if test="gameId != null">
+				game_id = #{gameId},
+			</if>
+			<if test="appId != null">
+				app_id = #{appId},
+			</if>
+			<if test="accountId != null">
+				account_id = #{accountId},
+			</if>
+			<if test="campaignId != null">
+				campaign_id = #{campaignId},
+			</if>
+			<if test="campaignName != null">
+				campaign_name = #{campaignName},
+			</if>
+			<if test="campaignType != null">
+				campaign_type = #{campaignType},
+			</if>
+			<if test="handleDate != null">
+				handle_date = #{handleDate},
+			</if>
+			<if test="campaignCost != null">
+				campaign_cost = #{campaignCost},
+			</if>
+			<if test="valid != null and valid != ''">
+				valid = #{valid},
+			</if>
+		</trim>
+	</insert>
+</mapper>
