@@ -121,8 +121,8 @@ form#payment input[type=radio] {
 		<fieldset>
 			<legend>一些信息</legend>
 			<ol>
-				<li><label for="cmd">浏览器地址：</label> <input id="cmd"
-				    name="cmd" placeholder="浏览器地址,不选为默认." /></li>
+				<li><label for="cmd">浏览器地址：</label> <input id="cmd" name="cmd"
+					placeholder="浏览器地址,不选为默认." /></li>
 				<li><label for="appID">应用编号：</label> <input id="appID"
 					name="appID" placeholder="应用编号"></li>
 				<li><label for="secret">应用密钥：</label> <input id="secret"
@@ -132,7 +132,8 @@ form#payment input[type=radio] {
 		<input type="button" value="请求授权" id="btnSubmit" />
 	</form>
 </body>
-<script type="text/javascript" src="http://127.0.0.1:8888/js/jquery-3.5.1.js"></script>
+<script type="text/javascript"
+	src="http://127.0.0.1:39888/js/jquery-3.5.1.js"></script>
 <script type="text/javascript">
 	$(function() {
 		$('input#btnSubmit').click(function() {
@@ -142,7 +143,7 @@ form#payment input[type=radio] {
 				//请求的媒体类型
 				contentType : "application/json;charset=UTF-8",
 				//请求地址
-				url : "http://localhost:8888/door/requestAuthor",
+				url : "http://127.0.0.1:39888/door/requestAuthor",
 				//数据，json字符串
 				//data : JSON.stringify(list),
 				data : form2JsonString('author'),
