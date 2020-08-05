@@ -83,12 +83,12 @@ public class RyGameRun {
 	}
 
 	public boolean quartzDoor(Date date) {
-		log.info("expireDayCompute() Advert Click Data Stat Start: {}", DateUtil.now());
+		log.info("RyGameRun Data Stat Start: {}", DateUtil.now());
 		if (null == date) {
 			date = customDate(-1).getTime();
 		}
 		boolean flag = daySaveOperator(queryStatRedis(DateUtil.formatDate(date), 0));
-		log.info("expireDayCompute() Advert Click Data Stat End: {}", DateUtil.now());
+		log.info("RyGameRun Data Stat End: {}", DateUtil.now());
 		return flag;
 	}
 

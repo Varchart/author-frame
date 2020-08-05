@@ -17,10 +17,11 @@ import com.author.commons.beans.DataBean;
 import com.author.commons.beans.HeadBean;
 import com.author.commons.utils.Constants;
 import com.author.commons.utils.Constants.redis;
-import com.author.commons.utils.aspects.annotations.CacheConvert;
 import com.author.commons.utils.Result;
+import com.author.commons.utils.aspects.annotations.CacheConvert;
 import com.author.commons.utils.caches.RedisImpl;
 import com.author.commons.utils.enums.Rc;
+import com.author.commons.utils.quartzs.GameAdHandle;
 import com.author.commons.utils.quartzs.RunHandle;
 import com.author.commons.utils.quartzs.RyGameRun;
 import com.author.commons.utils.resps.Response;
@@ -49,6 +50,9 @@ public class DoorController {
 	@Resource
 	private RyGameRun gameRunService;
 
+	@Resource
+	private GameAdHandle gameADService;
+
 	@RequestMapping(value = "/requestAuthor")
 	public void requestAuthor(@RequestBody DataBean record) {
 		if (StrUtil.isNotEmpty(record.getAppID())) {
@@ -73,6 +77,13 @@ public class DoorController {
 		Date date = DateUtil.parse(time);
 		gameRunService.setDate(date);
 		gameRunService.quartzDoor(date);
+		return Response.genSuccessResult();
+	}
+
+	@RequestMapping(value = "/gameADrun", method = RequestMethod.POST)
+	public Result gameADrun(@RequestBody(required = false) String time) {
+		Date date = DateUtil.parse(time);
+		gameADService.quartzDoor(date);
 		return Response.genSuccessResult();
 	}
 
