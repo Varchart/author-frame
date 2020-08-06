@@ -1,7 +1,8 @@
-package com.author.commons.beans;
+package com.author.commons.beans.games;
 
 import java.math.BigDecimal;
 
+import com.author.commons.beans.BaseEntity;
 import com.author.commons.beans.models.OaQqRobot;
 
 import cn.hutool.core.bean.BeanUtil;
