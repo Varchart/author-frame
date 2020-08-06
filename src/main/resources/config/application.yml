@@ -15,6 +15,8 @@ spring:
         reader:
           db-type: mysql
           driver-class-name: com.mysql.cj.jdbc.Driver
+          #外 101.133.137.101
+          #内 172.19.163.13
           url: jdbc:mysql://172.19.163.13:3306/oasystem?useUnicode=true&characterEncoding=UTF8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&autoReconnect=true&allowMultiQueries=true
           username: oasystem
           password: izpPnN2LRscYN8j3
@@ -47,9 +49,11 @@ spring:
         writer:
           db-type: mysql
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://101.133.137.101:3306/oasystem?useUnicode=true&characterEncoding=UTF8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&autoReconnect=true&allowMultiQueries=true
-          username: oasystem
-          password: izpPnN2LRscYN8j3
+          #外 101.132.129.8
+          #内 172.19.163.7
+          url: jdbc:mysql://172.19.163.7:3306/eladmin?useUnicode=true&characterEncoding=UTF8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true&autoReconnect=true&allowMultiQueries=true
+          username: eladmin
+          password: WRbZreLhidY88S6N
           # 下面为连接池的补充设置，应用到上面所有数据源中
           # 初始化连接数大小，最小，最大
           initial-size: 5

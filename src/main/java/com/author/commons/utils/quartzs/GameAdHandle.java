@@ -53,6 +53,7 @@ public class GameAdHandle {
 		quartzDoor(null);
 	}
 
+	@Noder(node = Ndb.writer)
 	public boolean quartzDoor(Date date) {
 		log.info("GameAdHandle Data Stat Start: {}", DateUtil.now());
 		if (null == date) {

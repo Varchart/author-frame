@@ -22,7 +22,9 @@ import com.author.commons.utils.Constants.redis;
 import com.author.commons.utils.Constants.ru;
 import com.author.commons.utils.Constants.uri;
 import com.author.commons.utils.aspects.annotations.CacheConvert;
+import com.author.commons.utils.aspects.annotations.Noder;
 import com.author.commons.utils.caches.RedisImpl;
+import com.author.commons.utils.enums.Ndb;
 import com.author.commons.utils.enums.Rc;
 
 import cn.hutool.core.bean.BeanUtil;
@@ -51,6 +53,7 @@ public class RunHandle {
 	 * cron = "0 0 0 * * ?" 凌晨00点执行 fixedDelay = 5000 每5s执行一次
 	 */
 	@CacheConvert
+	@Noder(node = Ndb.writer)
 	@Scheduled(cron = "0 30 1 * * ?")
 	public void run1data() {
 		StringBuffer cookies = null;
