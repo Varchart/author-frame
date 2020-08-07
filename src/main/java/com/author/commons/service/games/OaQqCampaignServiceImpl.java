@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 
 import com.author.commons.beans.games.OaQqCampaign;
 import com.author.commons.dao.games.OaQqCampaignMapper;
+import com.author.commons.utils.aspects.annotations.Noder;
+import com.author.commons.utils.enums.Ndb;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 /**
@@ -21,6 +23,7 @@ public class OaQqCampaignServiceImpl extends ServiceImpl<OaQqCampaignMapper, OaQ
 	private OaQqCampaignMapper oaQqCampaignMapper;
 
 	@Override
+	@Noder(node = Ndb.writer)
 	public int insertData(OaQqCampaign record) {
 		return oaQqCampaignMapper.insertActive(record);
 	}

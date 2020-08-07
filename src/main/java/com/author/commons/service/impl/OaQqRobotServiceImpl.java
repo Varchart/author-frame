@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import com.author.commons.beans.models.OaQqRobot;
 import com.author.commons.dao.OaQqRobotMapper;
 import com.author.commons.service.IOaQqRobotService;
+import com.author.commons.utils.aspects.annotations.Noder;
+import com.author.commons.utils.enums.Ndb;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 
@@ -23,6 +25,7 @@ public class OaQqRobotServiceImpl extends ServiceImpl<OaQqRobotMapper, OaQqRobot
 	private OaQqRobotMapper robotMapper;
 
 	@Override
+	@Noder(node = Ndb.writer)
 	public boolean saveActive(OaQqRobot record) {
 		return SqlHelper.retBool(robotMapper.insertActive(record));
 	}

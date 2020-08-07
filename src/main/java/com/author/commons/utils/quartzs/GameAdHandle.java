@@ -16,9 +16,7 @@ import com.author.commons.beans.games.QQCampaignDataDTO;
 import com.author.commons.service.games.OaQqCampaignService;
 import com.author.commons.utils.Constants.redis;
 import com.author.commons.utils.aspects.annotations.CacheConvert;
-import com.author.commons.utils.aspects.annotations.Noder;
 import com.author.commons.utils.caches.RedisImpl;
-import com.author.commons.utils.enums.Ndb;
 import com.author.commons.utils.enums.Rc;
 
 import cn.hutool.core.collection.CollectionUtil;
@@ -53,7 +51,6 @@ public class GameAdHandle {
 		quartzDoor(null);
 	}
 
-	@Noder(node = Ndb.writer)
 	public boolean quartzDoor(Date date) {
 		log.info("GameAdHandle Data Stat Start: {}", DateUtil.now());
 		if (null == date) {
