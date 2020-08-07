@@ -27,18 +27,22 @@ public class DBContextHolder {
 	}
 
 	public static void setDBSource(String noder) {
-		/* 轮询 */
-		int index = counter.getAndIncrement() % 2;
-		if (counter.get() > 9999) {
-			counter.set(-1);
-		}
-		if (index == 0) {
-			contextHolder.set(noder);
-			log.info("当前 DataSource: {}", noder);
+		synchronized (contextHolder) {
+			/* 轮询 */
+			int index = counter.getAndIncrement() % 2;
+			if (counter.get() > 9999) {
+				counter.set(-1);
+			}
+			if (index == 0) {
+				contextHolder.set(noder);
+				log.info("当前 DataSource: {}", noder);
+			}
 		}
 	}
 
 	public static void clearDataSource() {
-		contextHolder.remove();
+		synchronized (contextHolder) {
+			contextHolder.remove();
+		}
 	}
 }
