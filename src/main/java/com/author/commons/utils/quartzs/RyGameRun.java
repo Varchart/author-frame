@@ -112,7 +112,6 @@ public class RyGameRun {
 		CopyOnWriteArrayList<OaAdvStat> saveItems = new CopyOnWriteArrayList<>();
 		tn = (tn <= 0 ? Constants.threadNumber : tn);
 		CountDownLatch countDownLatch = new CountDownLatch(tn);
-		CopyOnWriteArrayList<Object> items = new CopyOnWriteArrayList<>();
 		do {
 			List<String> keys = new ArrayList(cacheItems.entrySet());
 			int size = keys.size();
@@ -186,7 +185,7 @@ public class RyGameRun {
 														}
 													}
 												}
-												items.remove(searchItem.getKey());
+												threadResults.remove(searchItem.getKey());
 											}
 										}
 										/* 验证记录是否已存在 */
@@ -244,7 +243,7 @@ public class RyGameRun {
 			log.error("线程阻塞异常: {}", ex.getMessage());
 		}
 
-		return items;
+		return saveItems;
 	}
 
 	protected void dbBatch(CopyOnWriteArrayList<OaAdvStat> saveItems, int tn) {
@@ -356,6 +355,9 @@ public class RyGameRun {
 									do {
 										String key = keyItes.next();
 										Integer totalNum = 0;
+										if (StrUtil.contains(key, "null")) {
+											continue;
+										}
 										if (StrUtil.contains(key, columns.count.toString())) {
 											Object strResults = cacheService.redisResults(key, redis.redis1str, 0, 0);
 											if (strResults != null) {
