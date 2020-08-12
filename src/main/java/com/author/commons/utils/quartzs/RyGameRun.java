@@ -190,7 +190,6 @@ public class RyGameRun {
 														threadResults.remove(searchItem.getKey());
 													}
 												} catch (Throwable ex) {
-													log.error("Inner 价值数据处理失败: {}", ex.getMessage());
 													continue;
 												}
 											} while (searchItems.hasNext());
@@ -231,7 +230,6 @@ public class RyGameRun {
 											}
 										}
 									} catch (Throwable ex) {
-										log.error("Outer 价值数据处理失败: {}", ex.getMessage());
 										continue;
 									}
 								} while (iter.hasNext());
@@ -383,7 +381,6 @@ public class RyGameRun {
 												advertItems.put(key, (countNum == null ? 0 : countNum) + totalNum);
 											}
 										} catch (Throwable ex) {
-											log.error("缓存数据处理失败: {}", ex.getMessage());
 											continue;
 										}
 									} while (keyItes.hasNext());
