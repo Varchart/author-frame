@@ -133,98 +133,108 @@ public class RyGameRun {
 						if (CollectionUtil.isNotEmpty(threadResults)) {
 							synchronized (threadResults) {
 								Iterator<ConcurrentHashMap.Entry<String, Long>> iter = threadResults.iterator();
-								while (iter.hasNext()) {
-									/* 通过获取到的缓存标识,检索对应的相关信息封装 */
+								do {
 									ConcurrentHashMap.Entry<String, Long> item = iter.next();
-									String[] keyChar = item.getKey().split(StrUtil.COLON);
-									/* 组装匹配条件(统计日期+应用ID+广告ID) */
-									String outDateItem = keyChar[keyChar.length - 4], outProductItem = keyChar[keyChar.length - 2], outAdvertItem = keyChar[keyChar.length - 1];
-									/* 验证是否是上一天的数据,任务启动时间默认为次日 */
-									if (StrUtil.equalsIgnoreCase(DateUtil.formatDate(date.getTime()), outDateItem)) {
-										String mateItem = new StringBuffer(outDateItem).append(outProductItem).append(outAdvertItem).toString().trim();
-										/* 匹配ING */
-										Iterator<ConcurrentHashMap.Entry<String, Long>> searchItems = threadResults.iterator();
-										StatParamsDTO param = null;
-										while (searchItems.hasNext()) {
-											ConcurrentHashMap.Entry<String, Long> searchItem = searchItems.next();
-											String[] searchChar = searchItem.getKey().split(StrUtil.COLON);
-											/* 组装匹配条件(统计日期+应用ID+广告ID) */
-											String innerDateItem = searchChar[searchChar.length - 4], innerProductItem = searchChar[searchChar.length - 2], innerAdvertItem = searchChar[searchChar.length - 1];
-											String search = new StringBuffer(innerDateItem).append(innerProductItem).append(innerAdvertItem).toString().trim();
-											if (StrUtil.equalsIgnoreCase(mateItem, search)) {
-												if (param == null) {
-													param = new StatParamsDTO();
-												}
-												param.setAdvId(Long.valueOf(innerAdvertItem));
-												param.setProductId(Long.valueOf(innerProductItem));
-												if (StrUtil.contains(searchItem.getKey(), columns.click.toString())) {
-													if (StrUtil.contains(searchItem.getKey(), columns.count.toString())) {
-														param.setCount(searchItem.getValue());
-													}
-													if (StrUtil.contains(searchItem.getKey(), columns.dist.toString())) {
-														param.setDist(searchItem.getValue());
-													}
-												}
-												if (StrUtil.contains(searchItem.getKey(), columns.allow.toString())) {
-													if (searchItem.getKey().contains(columns.count.toString())) {
-														param.setAllowCount(searchItem.getValue());
-													}
-													if (StrUtil.contains(searchItem.getKey(), columns.dist.toString())) {
-														param.setAllowDist(searchItem.getValue());
-														/* 日活 */
-														if (BigDecimal.ZERO.compareTo(param.getRate100()) < 1) {
-															GameDauDTO record = new GameDauDTO();
-															record.setTableName(MessageFormat.format(dau, param.getProductId()));
-															record.setStartTime(d2hm(innerDateItem, null));
-															record.setEndTime(dateDefaultHM());
-															int dauCount = gameDauMapper.queryDau(record);
-															/* 计算占比(有效点击/日活) */
-															if (dauCount > 0) {
-																param.setRate100(BigDecimal.valueOf(param.getAllowDist()).divide(BigDecimal.valueOf(dauCount), 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+									try {
+										/* 通过获取到的缓存标识,检索对应的相关信息封装 */
+										String[] keyChar = item.getKey().split(StrUtil.COLON);
+										/* 组装匹配条件(统计日期+应用ID+广告ID) */
+										String outDateItem = keyChar[keyChar.length - 4], outProductItem = keyChar[keyChar.length - 2], outAdvertItem = keyChar[keyChar.length - 1];
+										/* 验证是否是上一天的数据,任务启动时间默认为次日 */
+										if (StrUtil.equalsIgnoreCase(DateUtil.formatDate(date.getTime()), outDateItem)) {
+											String mateItem = new StringBuffer(outDateItem).append(outProductItem).append(outAdvertItem).toString().trim();
+											/* 匹配ING */
+											Iterator<ConcurrentHashMap.Entry<String, Long>> searchItems = threadResults.iterator();
+											StatParamsDTO param = null;
+											do {
+												ConcurrentHashMap.Entry<String, Long> searchItem = searchItems.next();
+												try {
+													String[] searchChar = searchItem.getKey().split(StrUtil.COLON);
+													/* 组装匹配条件(统计日期+应用ID+广告ID) */
+													String innerDateItem = searchChar[searchChar.length - 4], innerProductItem = searchChar[searchChar.length - 2], innerAdvertItem = searchChar[searchChar.length - 1];
+													String search = new StringBuffer(innerDateItem).append(innerProductItem).append(innerAdvertItem).toString().trim();
+													if (StrUtil.equalsIgnoreCase(mateItem, search)) {
+														if (param == null) {
+															param = new StatParamsDTO();
+														}
+														param.setAdvId(Long.valueOf(innerAdvertItem));
+														param.setProductId(Long.valueOf(innerProductItem));
+														if (StrUtil.contains(searchItem.getKey(), columns.click.toString())) {
+															if (StrUtil.contains(searchItem.getKey(), columns.count.toString())) {
+																param.setCount(searchItem.getValue());
+															}
+															if (StrUtil.contains(searchItem.getKey(), columns.dist.toString())) {
+																param.setDist(searchItem.getValue());
 															}
 														}
+														if (StrUtil.contains(searchItem.getKey(), columns.allow.toString())) {
+															if (searchItem.getKey().contains(columns.count.toString())) {
+																param.setAllowCount(searchItem.getValue());
+															}
+															if (StrUtil.contains(searchItem.getKey(), columns.dist.toString())) {
+																param.setAllowDist(searchItem.getValue());
+																/* 日活 */
+																if (BigDecimal.ZERO.compareTo(param.getRate100()) < 1) {
+																	GameDauDTO record = new GameDauDTO();
+																	record.setTableName(MessageFormat.format(dau, param.getProductId()));
+																	record.setStartTime(d2hm(innerDateItem, null));
+																	record.setEndTime(dateDefaultHM());
+																	int dauCount = gameDauMapper.queryDau(record);
+																	/* 计算占比(有效点击/日活) */
+																	if (dauCount > 0) {
+																		param.setRate100(BigDecimal.valueOf(param.getAllowDist()).divide(BigDecimal.valueOf(dauCount), 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+																	}
+																}
+															}
+														}
+														threadResults.remove(searchItem.getKey());
 													}
+												} catch (Throwable ex) {
+													log.error("Inner 价值数据处理失败: {}", ex.getMessage());
+													continue;
 												}
-												threadResults.remove(searchItem.getKey());
-											}
-										}
-										/* 验证记录是否已存在 */
-										if (null != param) {
-											/* 统计日期 */
-											param.setSummaryDate(outDateItem);
-											int existsFlag = statService.exists(param);
-											if (existsFlag <= 0) {
-												OaAdvStatDTO advStatResult = statService.persist(param);
-												if (null != advStatResult) {
-													advStatResult.setClickAd(param.getCount());
-													advStatResult.setUniqueClick(param.getDist());
-													advStatResult.setSuccessOpen(param.getAllowCount());
-													advStatResult.setValidClick(param.getAllowDist());
-													advStatResult.setDutyRate(param.getRate100());
-													advStatResult.setSummarydate(DateUtil.parseDate(param.getSummaryDate()));
-													Object priceNode = getJsonRecord(advStatResult.getPriceNodes(), param.getSummaryDate());
-													if (null != priceNode) {
-														JSONObject priceJson = JSONUtil.parseObj(priceNode);
-														BigDecimal price = priceJson.getBigDecimal(columns.value.toString());
+											} while (searchItems.hasNext());
+											/* 验证记录是否已存在 */
+											if (null != param) {
+												/* 统计日期 */
+												param.setSummaryDate(outDateItem);
+												int existsFlag = statService.exists(param);
+												if (existsFlag <= 0) {
+													OaAdvStatDTO advStatResult = statService.persist(param);
+													if (null != advStatResult) {
+														advStatResult.setClickAd(param.getCount());
+														advStatResult.setUniqueClick(param.getDist());
+														advStatResult.setSuccessOpen(param.getAllowCount());
+														advStatResult.setValidClick(param.getAllowDist());
+														advStatResult.setDutyRate(param.getRate100());
+														advStatResult.setSummarydate(DateUtil.parseDate(param.getSummaryDate()));
+														Object priceNode = getJsonRecord(advStatResult.getPriceNodes(), param.getSummaryDate());
+														if (null != priceNode) {
+															JSONObject priceJson = JSONUtil.parseObj(priceNode);
+															BigDecimal price = priceJson.getBigDecimal(columns.value.toString());
 
-														OaAdvValueSheetDTO valueSheetDTO = new OaAdvValueSheetDTO();
-														BeanUtil.copyProperties(advStatResult, valueSheetDTO);
-														valueSheetDTO.setPageNumber(1);
-														valueSheetDTO.setPageSize(1);
-														valueSheetDTO = valueSheetService.queryData(valueSheetDTO);
-														if (valueSheetDTO != null && null != valueSheetDTO.getPrice()) {
-															if (ObjectUtil.compare(price, valueSheetDTO.getPrice()) != 0) {
-																price = valueSheetDTO.getPrice();
+															OaAdvValueSheetDTO valueSheetDTO = new OaAdvValueSheetDTO();
+															BeanUtil.copyProperties(advStatResult, valueSheetDTO);
+															valueSheetDTO.setPageNumber(1);
+															valueSheetDTO.setPageSize(1);
+															valueSheetDTO = valueSheetService.queryData(valueSheetDTO);
+															if (valueSheetDTO != null && null != valueSheetDTO.getPrice()) {
+																if (ObjectUtil.compare(price, valueSheetDTO.getPrice()) != 0) {
+																	price = valueSheetDTO.getPrice();
+																}
 															}
+															advStatResult.setPrice(price);
 														}
-														advStatResult.setPrice(price);
+														saveItems.add(advStatResult.getPo());
 													}
-													saveItems.add(advStatResult.getPo());
 												}
 											}
 										}
+									} catch (Throwable ex) {
+										log.error("Outer 价值数据处理失败: {}", ex.getMessage());
+										continue;
 									}
-								}
+								} while (iter.hasNext());
 							}
 						}
 					} catch (Throwable ex) {
@@ -354,25 +364,27 @@ public class RyGameRun {
 									Iterator<String> keyItes = threadResults.iterator();
 									do {
 										String key = keyItes.next();
-										Integer totalNum = 0;
-										if (StrUtil.contains(key, "null")) {
+										try {
+											Integer totalNum = 0;
+											if (StrUtil.contains(key, columns.count.toString())) {
+												Object strResults = cacheService.redisResults(key, redis.redis1str, 0, 0);
+												if (strResults != null) {
+													totalNum = Integer.valueOf(obj2str(strResults));
+												}
+												Long countNum = advertItems.get(key);
+												advertItems.put(key, (countNum == null ? 0 : countNum) + totalNum);
+											}
+											if (StrUtil.contains(key, columns.dist.toString())) {
+												Object setResults = cacheService.redisResults(key, redis.redis2set, 0, 0);
+												if (setResults instanceof LinkedHashSet) {
+													totalNum = ((LinkedHashSet) setResults).size();
+												}
+												Long countNum = advertItems.get(key);
+												advertItems.put(key, (countNum == null ? 0 : countNum) + totalNum);
+											}
+										} catch (Throwable ex) {
+											log.error("缓存数据处理失败: {}", ex.getMessage());
 											continue;
-										}
-										if (StrUtil.contains(key, columns.count.toString())) {
-											Object strResults = cacheService.redisResults(key, redis.redis1str, 0, 0);
-											if (strResults != null) {
-												totalNum = Integer.valueOf(obj2str(strResults));
-											}
-											Long countNum = advertItems.get(key);
-											advertItems.put(key, (countNum == null ? 0 : countNum) + totalNum);
-										}
-										if (StrUtil.contains(key, columns.dist.toString())) {
-											Object setResults = cacheService.redisResults(key, redis.redis2set, 0, 0);
-											if (setResults instanceof LinkedHashSet) {
-												totalNum = ((LinkedHashSet) setResults).size();
-											}
-											Long countNum = advertItems.get(key);
-											advertItems.put(key, (countNum == null ? 0 : countNum) + totalNum);
 										}
 									} while (keyItes.hasNext());
 								}
